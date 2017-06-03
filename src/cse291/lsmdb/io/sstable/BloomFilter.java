@@ -15,6 +15,11 @@ public class BloomFilter implements Filter {
         this.hasher = hasher;
     }
 
+    public BloomFilter(long[] words, StringHasher hasher) {
+        this.bitset = new BitSet(words);
+        this.hasher = hasher;
+    }
+
     public boolean isPresent(String key) {
        return bitset.get(bitOffset(key));
     }
@@ -26,5 +31,9 @@ public class BloomFilter implements Filter {
     private int bitOffset(String key) {
         int hash = hasher.hash(key);
         return hash % bitset.size();
+    }
+
+    public long[] toLongs() {
+        return bitset.toLongs();
     }
 }

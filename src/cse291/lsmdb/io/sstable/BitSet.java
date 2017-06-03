@@ -1,5 +1,7 @@
 package cse291.lsmdb.io.sstable;
 
+import org.jetbrains.annotations.Contract;
+
 /**
  * Created by musteryu on 2017/5/29.
  */
@@ -42,15 +44,22 @@ public class BitSet {
             throw new IndexOutOfBoundsException("bitOffset > all bits: " + bitOffset);
     }
 
+    @Contract(pure = true)
     private static int wordOffset(int bitOffset) {
         return bitOffset >> ADDRESS_BITS_PER_WORD;
     }
 
+    @Contract(value = "_ -> !null", pure = true)
     private static long[] initWords(int numBits) {
         return new long[wordOffset(numBits)];
     }
 
+    @Contract(pure = true)
     public final int size() {
         return this.words.length;
+    }
+
+    public long[] toLongs() {
+        return this.words;
     }
 }
