@@ -7,15 +7,13 @@ import cse291.lsmdb.utils.Timed;
 
 import java.io.*;
 import java.util.NoSuchElementException;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
  * Created by musteryu on 2017/6/2.
  */
 public class DataLoader {
-    public static final String DEFAULT_SUFFIX = ".db";
+    public static final String DEFAULT_SUFFIX = "Data.db";
     public static final int DEFAULT_BLOOMFILTER_LEN = 128;
     private final RandomAccessFile raf;
 
@@ -75,6 +73,7 @@ public class DataLoader {
         while (lo < hi) {
             int mid = lo + (hi - lo) / 2;
             int idx = index[mid];
+            raf.seek(idx);
             Pair<String, Timed<String>> midColPair = readColumn();
             String midCol = midColPair.left;
             int cmp = midCol.compareTo(col);
