@@ -1,10 +1,15 @@
 package cse291.lsmdb.io.sstable;
 
+import cse291.lsmdb.io.interfaces.Filter;
+import cse291.lsmdb.io.interfaces.StringHasher;
 import cse291.lsmdb.utils.Pair;
 import cse291.lsmdb.utils.Timed;
 
 import java.io.*;
 import java.util.NoSuchElementException;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Created by musteryu on 2017/6/2.
@@ -50,19 +55,37 @@ public class DataLoader {
             } else if (currRow.equals(row)) {
                 int firstColOffset = raf.readInt();
                 int lastColOffset = raf.readInt();
-                long[] filterWords = new long[DEFAULT_BLOOMFILTER_LEN / Long.SIZE];
-                for (int i = 0; i < DEFAULT_BLOOMFILTER_LEN / Long.SIZE; i++) {
-                    filterWords[i] = raf.readLong();
-                }
-                BloomFilter filter = new BloomFilter(filterWords, new MurMurHasher());
+                Filter filter = readFilter(DEFAULT_BLOOMFILTER_LEN / Long.SIZE, MurMurHasher::new);
                 if (!filter.isPresent(col)) {
                     // not present in the current
                     throw new NoSuchElementException();
                 } else {
-                    
+                    char indexLen = raf.readChar();
+                    int[] index = new int[indexLen];
+                    return binarySearch(col, index);
                 }
+            } else break;
+        }
+        throw new NoSuchElementException("could not find the row: " + row);
+    }
+
+    private Timed<String> binarySearch(String col, int[] index)
+            throws NoSuchElementException, EOFException, IOException {
+        int lo = 0, hi = index.length;
+        while (lo < hi) {
+            int mid = lo + (hi - lo) / 2;
+            int idx = index[mid];
+            Pair<String, Timed<String>> midColPair = readColumn();
+            String midCol = midColPair.left;
+            int cmp = midCol.compareTo(col);
+            if (cmp == 0) return midColPair.right;
+            if (cmp < 0) {
+                lo = mid + 1;
+            } else {
+                hi = mid;
             }
         }
+        throw new NoSuchElementException("could not find the column: " + col);
     }
 
     /**
@@ -90,6 +113,24 @@ public class DataLoader {
 
         // build a timestamp
         long timestamp = raf.readLong();
-        return new Pair<>(col, new Timed<String>(data, timestamp));
+        return new Pair<>(col, new Timed<>(data, timestamp));
+    }
+
+    /**
+     * Reads a filter from the current position with specified number of longs and hasher factory
+     * function.
+     * @param numLongs num of longs
+     * @param hasherFactory factory function to create a StringHasher
+     * @return a bloom filter associated with a string hasher
+     * @throws EOFException if the file reaches the end in the process of reading the filter
+     * @throws IOException if an I/O error happens
+     */
+    private Filter readFilter(int numLongs, Supplier<StringHasher> hasherFactory)
+            throws EOFException, IOException {
+        long[] filterWords = new long[numLongs];
+        for (int i = 0; i < numLongs; i++) {
+            filterWords[i] = raf.readLong();
+        }
+        return new BloomFilter(filterWords, hasherFactory.get());
     }
 }
