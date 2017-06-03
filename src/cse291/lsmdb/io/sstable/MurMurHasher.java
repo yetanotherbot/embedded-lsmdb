@@ -7,54 +7,65 @@ import cse291.lsmdb.io.interfaces.StringHasher;
  */
 public class MurMurHasher implements StringHasher {
     public MurMurHasher() {}
+
+    /**
+     * MurmurHash algorithm to hash a string into a 32-bit integer
+     * Idea from https://sites.google.com/site/murmurhash/
+     * @param key the string to be hashed
+     * @return the hash value 32-bit int casted as a 64-bit long
+     */
     @Override
-    // The murmurhash implementation borrows the idea from https://sites.google.com/site/murmurhash/
-    // It generates a 64 bit long as the hash value
     public long hash(String key) {
-        //TODO: implement murmur hashing
         byte[] data = key.getBytes();
         int length = data.length;
         int seed = 42;
+        
+        final int c1 = 0xcc9e2d51;
+        final int c2 = 0x1b873593;
 
-        // 'm' and 'r' are mixing constants generated offline.
-        // They're not really 'magic', they just happen to work well.
-        final long m = 0xc6a4a7935bd1e995L;
-        final int r = 47;
+        int h1 = seed;
+        int roundedEnd = length & 0xfffffffc;  // round down to 4 byte block
 
-        long h = (seed&0xffffffffl)^(length*m);
+        for (int i= 0; i<roundedEnd; i+=4) {
+            // little endian load order
+            int k1 = (data[i] & 0xff) | ((data[i+1] & 0xff) << 8) | ((data[i+2] & 0xff) << 16) | (data[i+3] << 24);
+            k1 *= c1;
+            k1 = (k1 << 15) | (k1 >>> 17);  // ROTL32(k1,15);
+            k1 *= c2;
 
-        int length8 = length/8;
-
-        for (int i=0; i<length8; i++) {
-            final int i8 = i*8;
-            long k =  ((long)data[i8]&0xff)    +(((long)data[i8+1]&0xff)<<8)
-                +(((long)data[i8+2]&0xff)<<16) +(((long)data[i8+3]&0xff)<<24)
-                +(((long)data[i8+4]&0xff)<<32) +(((long)data[i8+5]&0xff)<<40)
-                +(((long)data[i8+6]&0xff)<<48) +(((long)data[i8+7]&0xff)<<56);
-
-            k *= m;
-            k ^= k >>> r;
-            k *= m;
-
-            h ^= k;
-            h *= m;
+            h1 ^= k1;
+            h1 = (h1 << 13) | (h1 >>> 19);  // ROTL32(h1,13);
+            h1 = h1*5+0xe6546b64;
         }
 
-        switch (length%8) {
-            case 7: h ^= (long)(data[(length&~7)+6]&0xff) << 48;
-            case 6: h ^= (long)(data[(length&~7)+5]&0xff) << 40;
-            case 5: h ^= (long)(data[(length&~7)+4]&0xff) << 32;
-            case 4: h ^= (long)(data[(length&~7)+3]&0xff) << 24;
-            case 3: h ^= (long)(data[(length&~7)+2]&0xff) << 16;
-            case 2: h ^= (long)(data[(length&~7)+1]&0xff) << 8;
-            case 1: h ^= (long)(data[length&~7]&0xff);
-                h *= m;
-        };
+        // tail
+        int k1 = 0;
 
-        h ^= h >>> r;
-        h *= m;
-        h ^= h >>> r;
+        switch(length & 0x03) {
+            case 3:
+                k1 = (data[roundedEnd + 2] & 0xff) << 16;
+                // fallthrough
+            case 2:
+                k1 |= (data[roundedEnd + 1] & 0xff) << 8;
+                // fallthrough
+            case 1:
+                k1 |= (data[roundedEnd] & 0xff);
+                k1 *= c1;
+                k1 = (k1 << 15) | (k1 >>> 17);  // ROTL32(k1,15);
+                k1 *= c2;
+                h1 ^= k1;
+        }
 
-        return h;
+        // finalization
+        h1 ^= length;
+
+        // fmix(h1);
+        h1 ^= h1 >>> 16;
+        h1 *= 0x85ebca6b;
+        h1 ^= h1 >>> 13;
+        h1 *= 0xc2b2ae35;
+        h1 ^= h1 >>> 16;
+
+        return h1;
     }
 }
