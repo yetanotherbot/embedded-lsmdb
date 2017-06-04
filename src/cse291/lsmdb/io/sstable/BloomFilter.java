@@ -29,8 +29,8 @@ public class BloomFilter implements Filter {
     }
 
     private int bitOffset(String key) {
-        int hash = hasher.hash(key);
-        return hash % bitset.size();
+        long hash = hasher.hash(key);
+        return ((int) hash) % bitset.size();
     }
 
     public long[] toLongs() {

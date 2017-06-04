@@ -12,9 +12,9 @@ import java.util.function.Supplier;
 /**
  * Created by musteryu on 2017/6/2.
  */
-public class DataLoader {
+public class DataLoader extends AbstractDataLoader {
     public static final String DEFAULT_SUFFIX = "Data.db";
-    public static final int DEFAULT_BLOOMFILTER_LEN = 128;
+    public static final int DEFAULT_BLOOM_FILTER_LEN = 128;
     private final RandomAccessFile raf;
 
     public DataLoader(File f, String suffix) throws IOException {
@@ -53,7 +53,7 @@ public class DataLoader {
             } else if (currRow.equals(row)) {
                 int firstColOffset = raf.readInt();
                 int lastColOffset = raf.readInt();
-                Filter filter = readFilter(DEFAULT_BLOOMFILTER_LEN / Long.SIZE, MurMurHasher::new);
+                Filter filter = readFilter(DEFAULT_BLOOM_FILTER_LEN / Long.SIZE, MurMurHasher::new);
                 if (!filter.isPresent(col)) {
                     // not present in the current
                     throw new NoSuchElementException();

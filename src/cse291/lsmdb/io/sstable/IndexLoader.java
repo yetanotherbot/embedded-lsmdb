@@ -1,5 +1,6 @@
 package cse291.lsmdb.io.sstable;
 
+import cse291.lsmdb.io.interfaces.Loadable;
 import cse291.lsmdb.utils.Pair;
 import static cse291.lsmdb.utils.RandomAccessUtils.*;
 
@@ -30,7 +31,7 @@ import java.io.RandomAccessFile;
  * If the index file is small enough (in most case), user could load it in memory.
  */
 
-public class IndexLoader {
+public class IndexLoader implements Loadable {
     public static final String DEFAULT_SUFFIX = "Index.db";
     private final RandomAccessFile raf;
     private Pair<RowCol, RowCol>[] ranges;
@@ -80,7 +81,7 @@ public class IndexLoader {
      * @param rc RowCol key to lookup
      * @return Data block index or -1
      */
-    private int lookup(RowCol rc) {
+    public int lookup(RowCol rc) {
         int lo = 0, hi = ranges.length;
         while (lo < hi) {
             int mid = lo + (hi - lo) / 2;
