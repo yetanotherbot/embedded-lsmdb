@@ -70,9 +70,9 @@ public class ComponentFile extends RandomAccessFile {
         String colName = rowCol.right;
         int colNameLength = colName.getBytes().length;
 
-        writeShort(rowNameLength);
+        writeChar(rowNameLength);
         write(rowName.getBytes());
-        writeShort(colNameLength);
+        writeChar(colNameLength);
         write(colName.getBytes());
     }
 
@@ -102,19 +102,19 @@ public class ComponentFile extends RandomAccessFile {
         String columnName = pair.left;
         int columnNameLength = columnName.getBytes().length;
 
-        writeShort(columnNameLength);
+        writeChar(columnNameLength);
         write(columnName.getBytes());
 
         // Write the columnValue length and column value
         // If it is a remove, the length is Short.MaxValue and no value will be written
         Modification mod = pair.right;
         if(mod.isRemove()){
-            writeShort(Short.MAX_VALUE);
+            writeChar(Character.MAX_VALUE);
         } else {
             String columnValue = mod.getIfPresent().get();
             int columnValueLength = columnValue.getBytes().length;
 
-            writeShort(columnValueLength);
+            writeChar(columnValueLength);
             write(columnValue.getBytes());
         }
 
