@@ -20,7 +20,7 @@ public class ComponentFile extends RandomAccessFile {
         super(f, "r");
     }
 
-    public static enum VarLengthType {
+    public enum VarLengthType {
         VAR_LENGTH_8,
         VAR_LENGTH_16,
         VAR_LENGTH_32

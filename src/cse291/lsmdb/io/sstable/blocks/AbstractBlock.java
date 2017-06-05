@@ -8,9 +8,9 @@ import java.io.IOException;
 /**
  * Created by musteryu on 2017/6/4.
  */
-public abstract class AbstractBlock implements Block {
+abstract class AbstractBlock implements Block {
     public static final String DEFAULT_SUFFIX = ".db";
-    abstract public File getFile() throws IOException;
+    public abstract File getFile() throws IOException;
     public ComponentFile getComponentFile() throws IOException {
         return new ComponentFile(getFile());
     }
