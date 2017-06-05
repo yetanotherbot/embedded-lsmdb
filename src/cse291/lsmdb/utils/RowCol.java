@@ -1,12 +1,10 @@
-package cse291.lsmdb.io.sstable;
-
-import cse291.lsmdb.utils.Pair;
+package cse291.lsmdb.utils;
 
 /**
  * Created by musteryu on 2017/6/3.
  */
-class RowCol extends Pair<String, String> implements Comparable<RowCol> {
-    RowCol(String row, String col) { super(row, col); }
+public class RowCol extends Pair<String, String> implements Comparable<RowCol> {
+    public RowCol(String row, String col) { super(row, col); }
 
     @Override
     public int compareTo(RowCol that) {

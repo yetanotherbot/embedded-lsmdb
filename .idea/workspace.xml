@@ -2,17 +2,35 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="aee358cf-f557-4cb7-8261-569957d2f025" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/cse291/lsmdb/io/interfaces/ReadableFilter.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/AbstractDataLoader.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/MemDataLoader.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/Modification.java" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/cse291/lsmdb/io/interfaces/Loader.java" afterPath="$PROJECT_DIR$/src/cse291/lsmdb/io/interfaces/Loadable.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/cse291/lsmdb/io/interfaces/Block.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/cse291/lsmdb/io/interfaces/Hasher.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/cse291/lsmdb/io/interfaces/WritableFilter.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/blocks/AbstractBlock.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/blocks/AbstractSSTableBlock.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/blocks/ComponentFile.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/blocks/DataBlock.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/blocks/DataBlockLoader.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/blocks/Descriptor.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/blocks/DiskSSTableBlock.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/blocks/FilterBlock.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/blocks/IndexBlock.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/blocks/IndexBlockLoader.java" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/cse291/lsmdb/io/interfaces/ReadableFilter.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/AbstractDataLoader.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/DataLoader.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/Descriptor.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/IndexLoader.java" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/cse291/lsmdb/utils/RandomAccessUtils.java" afterPath="" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/BitSet.java" afterPath="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/filters/BitSet.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/BloomFilter.java" afterPath="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/filters/BloomFilter.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/FilterLoader.java" afterPath="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/blocks/FilterBlockLoader.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/MemDataLoader.java" afterPath="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/blocks/MemSSTableBlock.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/Modification.java" afterPath="$PROJECT_DIR$/src/cse291/lsmdb/utils/Modification.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/RowCol.java" afterPath="$PROJECT_DIR$/src/cse291/lsmdb/utils/RowCol.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/cse291/lsmdb/io/interfaces/Filter.java" afterPath="$PROJECT_DIR$/src/cse291/lsmdb/io/interfaces/Filter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/BloomFilter.java" afterPath="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/BloomFilter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/DataLoader.java" afterPath="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/DataLoader.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/FilterLoader.java" afterPath="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/FilterLoader.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/IndexLoader.java" afterPath="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/IndexLoader.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/cse291/lsmdb/io/interfaces/StringHasher.java" afterPath="$PROJECT_DIR$/src/cse291/lsmdb/io/interfaces/StringHasher.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/MemTable.java" afterPath="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/MemTable.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/SSTableReader.java" afterPath="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/SSTableReader.java" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -26,13 +44,72 @@
     <option name="PATCH_PATH" value="" />
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
+  <component name="FavoritesManager">
+    <favorites_list name="CSE291StorageSystemProject2" />
+  </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="SSTableReader.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="DiskSSTableBlock.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/blocks/DiskSSTableBlock.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="340">
+              <caret line="17" column="31" lean-forward="true" selection-start-line="17" selection-start-column="31" selection-end-line="17" selection-end-column="31" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MemTable.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/MemTable.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="537">
+              <caret line="112" column="1" lean-forward="true" selection-start-line="112" selection-start-column="1" selection-end-line="112" selection-end-column="1" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#933#934#0" expanded="true" />
+                <element signature="e#980#981#0" expanded="true" />
+                <element signature="e#1940#1941#0" expanded="true" />
+                <element signature="e#2015#2016#0" expanded="true" />
+                <element signature="e#2204#2205#0" expanded="true" />
+                <element signature="e#2264#2265#0" expanded="true" />
+                <element signature="e#3090#3091#0" expanded="true" />
+                <element signature="e#3117#3118#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MemSSTableBlock.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/blocks/MemSSTableBlock.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-243">
+              <caret line="15" column="4" lean-forward="false" selection-start-line="15" selection-start-column="4" selection-end-line="15" selection-end-column="4" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#1794#1795#0" expanded="true" />
+                <element signature="e#1830#1831#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Timed.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/utils/Timed.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="200">
+              <caret line="10" column="17" lean-forward="false" selection-start-line="10" selection-start-column="17" selection-end-line="10" selection-end-column="17" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SSTableReader.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/SSTableReader.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-410">
-              <caret line="30" column="27" lean-forward="true" selection-start-line="30" selection-start-column="27" selection-end-line="30" selection-end-column="27" />
+            <state relative-caret-position="497">
+              <caret line="90" column="20" lean-forward="false" selection-start-line="90" selection-start-column="20" selection-end-line="90" selection-end-column="20" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -40,97 +117,12 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MemDataLoader.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/MemDataLoader.java">
+      <file leaf-file-name="BitSet.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/filters/BitSet.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="542">
-              <caret line="55" column="5" lean-forward="true" selection-start-line="55" selection-start-column="5" selection-end-line="55" selection-end-column="5" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#1746#1747#0" expanded="true" />
-                <element signature="e#1782#1783#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="AbstractDataLoader.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/AbstractDataLoader.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="170">
-              <caret line="10" column="42" lean-forward="true" selection-start-line="10" selection-start-column="42" selection-end-line="10" selection-end-column="42" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Modification.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/Modification.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="559">
-              <caret line="61" column="46" lean-forward="false" selection-start-line="61" selection-start-column="46" selection-end-line="61" selection-end-column="46" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#755#756#0" expanded="true" />
-                <element signature="e#810#811#0" expanded="true" />
-                <element signature="e#844#845#0" expanded="true" />
-                <element signature="e#903#904#0" expanded="true" />
-                <element signature="e#960#961#0" expanded="true" />
-                <element signature="e#1004#1005#0" expanded="true" />
-                <element signature="e#1061#1062#0" expanded="true" />
-                <element signature="e#1111#1112#0" expanded="true" />
-                <element signature="e#1155#1156#0" expanded="true" />
-                <element signature="e#1185#1186#0" expanded="true" />
-                <element signature="e#1215#1216#0" expanded="true" />
-                <element signature="e#1267#1268#0" expanded="true" />
-                <element signature="e#1300#1301#0" expanded="true" />
-                <element signature="e#1353#1354#0" expanded="true" />
-                <element signature="e#1387#1388#0" expanded="true" />
-                <element signature="e#1424#1425#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="IllegalArgumentException.java" pinned="false" current-in-tab="false">
-        <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_40.jdk/Contents/Home/src.zip!/java/lang/IllegalArgumentException.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="251">
-              <caret line="40" column="11" lean-forward="false" selection-start-line="40" selection-start-column="11" selection-end-line="40" selection-end-column="11" />
-              <folding>
-                <element signature="e#592#593#0" expanded="true" />
-                <element signature="e#615#616#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="IndexLoader.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/IndexLoader.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="362">
-              <caret line="83" column="10" lean-forward="false" selection-start-line="83" selection-start-column="10" selection-end-line="83" selection-end-column="10" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="FilterLoader.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/FilterLoader.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="627">
-              <caret line="48" column="22" lean-forward="false" selection-start-line="48" selection-start-column="22" selection-end-line="48" selection-end-column="22" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#1413#1414#0" expanded="true" />
-                <element signature="e#1457#1458#0" expanded="true" />
-                <element signature="e#1490#1491#0" expanded="true" />
-                <element signature="e#1519#1520#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="20">
+              <caret line="7" column="13" lean-forward="false" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -161,36 +153,57 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/SSTable.java" />
-        <option value="$PROJECT_DIR$/src/cse291/lsmdb/utils/SerializablePair.java" />
-        <option value="$PROJECT_DIR$/src/cse291/lsmdb/utils/Timed.java" />
-        <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/interfaces/Formatter.java" />
-        <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/interfaces/TableFormatter.java" />
-        <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/interfaces/TableCompactor.java" />
-        <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/interfaces/Compactor.java" />
-        <option value="$PROJECT_DIR$/src/cse291/lsmdb/utils/Counter.java" />
-        <option value="$PROJECT_DIR$/src/cse291/lsmdb/utils/ComparablePair.java" />
-        <option value="$PROJECT_DIR$/src/cse291/lsmdb/utils/Pair.java" />
-        <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/Descriptor.java" />
         <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/BitSet.java" />
         <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/SSTableLoader.java" />
-        <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/MemTable.java" />
         <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/MurMurHasher.java" />
-        <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/interfaces/StringHasher.java" />
-        <option value="$PROJECT_DIR$/src/cse291/lsmdb/utils/RandomAccessUtils.java" />
-        <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/RowCol.java" />
         <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/BloomFilter.java" />
         <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/interfaces/Loader.java" />
         <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/interfaces/Loadable.java" />
         <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/interfaces/ReadableFilter.java" />
-        <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/interfaces/Filter.java" />
-        <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/FilterLoader.java" />
-        <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/IndexLoader.java" />
         <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/AbstractDataLoader.java" />
         <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/DataLoader.java" />
+        <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/FilterLoader.java" />
+        <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/IndexLoader.java" />
+        <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/interfaces/WritableFilter.java" />
+        <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/interfaces/Filter.java" />
+        <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/interfaces/Hasher.java" />
+        <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/interfaces/StringHasher.java" />
+        <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/interfaces/Block.java" />
+        <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/FilterBlockLoader.java" />
+        <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/DataBlock.java" />
+        <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/Descriptor.java" />
+        <option value="$PROJECT_DIR$/src/cse291/lsmdb/utils/RandomAccessUtils.java" />
+        <option value="$PROJECT_DIR$/src/cse291/lsmdb/utils/ComponentFile.java" />
         <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/Modification.java" />
+        <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/AbstractBlock.java" />
+        <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/ComponentFile.java" />
+        <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/FilterBlock.java" />
+        <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/components/AbstractBlock.java" />
+        <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/RowCol.java" />
+        <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/components/ComponentFile.java" />
+        <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/components/DataBlock.java" />
+        <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/IndexBlock.java" />
+        <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/components/FilterBlockLoader.java" />
+        <option value="$PROJECT_DIR$/src/cse291/lsmdb/utils/RowCol.java" />
+        <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/components/IndexBlock.java" />
+        <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/components/FilterBlock.java" />
+        <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/blocks/IndexBlockLoader.java" />
+        <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/blocks/FilterBlockLoader.java" />
         <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/MemDataLoader.java" />
+        <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/MemSSTableBlock.java" />
+        <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/filters/BloomFilter.java" />
+        <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/blocks/Descriptor.java" />
+        <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/blocks/ComponentFile.java" />
+        <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/blocks/DataBlockLoader.java" />
+        <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/AbstractSSTableBlock.java" />
+        <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/DiskSSTableBlock.java" />
+        <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/blocks/AbstractSSTableBlock.java" />
+        <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/blocks/DiskSSTableBlock.java" />
+        <option value="$PROJECT_DIR$/src/cse291/lsmdb/utils/Modification.java" />
         <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/SSTableReader.java" />
+        <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/blocks/MemSSTableBlock.java" />
+        <option value="$PROJECT_DIR$/src/cse291/lsmdb/utils/Timed.java" />
+        <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/MemTable.java" />
       </list>
     </option>
   </component>
@@ -305,7 +318,11 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="interfaces" />
+              <option name="myItemId" value="sstable" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="blocks" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -339,7 +356,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Font" />
+    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.2" />
@@ -565,6 +582,15 @@
     </task>
     <servers />
   </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+  </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1280" height="800" extended-state="0" />
     <editor active="true" />
@@ -585,6 +611,7 @@
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25767368" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32876712" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="ANTLR Preview" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24959612" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -597,7 +624,6 @@
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="VcsContentAnnotationSettings">
@@ -612,119 +638,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/BloomFilter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
-          <caret line="30" column="0" lean-forward="false" selection-start-line="30" selection-start-column="0" selection-end-line="30" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/SSTable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="11" column="25" lean-forward="false" selection-start-line="11" selection-start-column="25" selection-end-line="11" selection-end-column="25" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/utils/Timed.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="10" column="10" lean-forward="false" selection-start-line="10" selection-start-column="10" selection-end-line="10" selection-end-column="10" />
-          <folding>
-            <element signature="e#170#171#0" expanded="false" />
-            <element signature="e#223#224#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/utils/Pair.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="468">
-          <caret line="28" column="0" lean-forward="true" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/BitSet.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#1643#1644#0" expanded="true" />
-            <element signature="e#1683#1684#0" expanded="true" />
-            <element signature="e#1714#1715#0" expanded="true" />
-            <element signature="e#1747#1748#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/BloomFilter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CSE291StorageSystemProject2.iml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="10" column="9" lean-forward="true" selection-start-line="10" selection-start-column="9" selection-end-line="10" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/utils/SerializablePair.java" />
-    <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_40.jdk/Contents/Home/src.zip!/java/util/Date.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="128">
-          <caret line="163" column="11" lean-forward="false" selection-start-line="163" selection-start-column="11" selection-end-line="163" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/utils/Timed.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="10" column="10" lean-forward="false" selection-start-line="10" selection-start-column="10" selection-end-line="10" selection-end-column="10" />
-          <folding>
-            <element signature="e#170#171#0" expanded="false" />
-            <element signature="e#223#224#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/SSTable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-9">
-          <caret line="14" column="0" lean-forward="false" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/interfaces/TableCompactor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="9" column="1" lean-forward="true" selection-start-line="9" selection-start-column="1" selection-end-line="9" selection-end-column="1" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_40.jdk/Contents/Home/src.zip!/java/util/TreeMap.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-9">
-          <caret line="182" column="11" lean-forward="false" selection-start-line="182" selection-start-column="11" selection-end-line="182" selection-end-column="11" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/interfaces/Compactor.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="120">
@@ -738,28 +651,6 @@
         <state relative-caret-position="515">
           <caret line="51" column="12" lean-forward="false" selection-start-line="51" selection-start-column="12" selection-end-line="51" selection-end-column="12" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/SSTableWriter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-9">
-          <caret line="5" column="26" lean-forward="false" selection-start-line="5" selection-start-column="26" selection-end-line="5" selection-end-column="26" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/utils/Counter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="14" column="16" lean-forward="false" selection-start-line="14" selection-start-column="16" selection-end-line="14" selection-end-column="16" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#202#203#0" expanded="false" />
-            <element signature="e#249#250#0" expanded="false" />
-            <element signature="e#419#420#0" expanded="false" />
-            <element signature="e#461#462#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -782,27 +673,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="jar://$APPLICATION_HOME_DIR$/redist/annotations-java8.jar!/org/jetbrains/annotations/Contract.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="16" column="18" lean-forward="false" selection-start-line="16" selection-start-column="18" selection-end-line="16" selection-end-column="18" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/BitSet.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-9">
-          <caret line="62" column="26" lean-forward="false" selection-start-line="62" selection-start-column="26" selection-end-line="62" selection-end-column="26" />
-          <folding>
-            <element signature="e#1643#1644#0" expanded="true" />
-            <element signature="e#1683#1684#0" expanded="true" />
-            <element signature="e#1714#1715#0" expanded="true" />
-            <element signature="e#1747#1748#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_40.jdk/Contents/Home/src.zip!/java/io/File.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="965">
@@ -815,14 +685,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="226">
           <caret line="209" column="23" lean-forward="false" selection-start-line="209" selection-start-column="23" selection-end-line="209" selection-end-column="23" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/Descriptor.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" column="33" lean-forward="false" selection-start-line="6" selection-start-column="33" selection-end-line="6" selection-end-column="33" />
           <folding />
         </state>
       </provider>
@@ -875,47 +737,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/utils/RandomAccessUtils.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="561">
-          <caret line="34" column="32" lean-forward="true" selection-start-line="34" selection-start-column="32" selection-end-line="34" selection-end-column="32" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/BloomFilter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="527">
-          <caret line="32" column="41" lean-forward="true" selection-start-line="32" selection-start-column="41" selection-end-line="32" selection-end-column="41" />
-          <folding>
-            <element signature="e#594#595#0" expanded="true" />
-            <element signature="e#642#643#0" expanded="true" />
-            <element signature="e#677#678#0" expanded="true" />
-            <element signature="e#719#720#0" expanded="true" />
-            <element signature="e#880#881#0" expanded="true" />
-            <element signature="e#919#920#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/RowCol.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="19" column="5" lean-forward="true" selection-start-line="19" selection-start-column="5" selection-end-line="19" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/MurMurHasher.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="10" column="7" lean-forward="true" selection-start-line="10" selection-start-column="7" selection-end-line="10" selection-end-column="7" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_40.jdk/Contents/Home/src.zip!/java/lang/String.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="234">
@@ -924,109 +745,14 @@
         </state>
       </provider>
     </entry>
-    <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_40.jdk/Contents/Home/src.zip!/java/io/RandomAccessFile.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="234">
-          <caret line="568" column="23" lean-forward="false" selection-start-line="568" selection-start-column="23" selection-end-line="568" selection-end-column="23" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/interfaces/StringHasher.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" column="17" lean-forward="false" selection-start-line="5" selection-start-column="17" selection-end-line="5" selection-end-column="17" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/FilterLoader.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="627">
-          <caret line="48" column="22" lean-forward="false" selection-start-line="48" selection-start-column="22" selection-end-line="48" selection-end-column="22" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#1413#1414#0" expanded="true" />
-            <element signature="e#1457#1458#0" expanded="true" />
-            <element signature="e#1490#1491#0" expanded="true" />
-            <element signature="e#1519#1520#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_40.jdk/Contents/Home/src.zip!/java/lang/IllegalArgumentException.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="251">
-          <caret line="40" column="11" lean-forward="false" selection-start-line="40" selection-start-column="11" selection-end-line="40" selection-end-column="11" />
-          <folding>
-            <element signature="e#592#593#0" expanded="true" />
-            <element signature="e#615#616#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/DataLoader.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="14" column="51" lean-forward="false" selection-start-line="14" selection-start-column="51" selection-end-line="14" selection-end-column="51" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/IndexLoader.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="362">
-          <caret line="83" column="10" lean-forward="false" selection-start-line="83" selection-start-column="10" selection-end-line="83" selection-end-column="10" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_40.jdk/Contents/Home/src.zip!/java/util/Optional.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="226">
           <caret line="132" column="13" lean-forward="false" selection-start-line="132" selection-start-column="13" selection-end-line="132" selection-end-column="13" />
           <folding>
-            <element signature="e#4242#4243#0" expanded="true" />
-            <element signature="e#4278#4279#0" expanded="true" />
+            <element signature="e#4242#4243#0" expanded="false" />
+            <element signature="e#4278#4279#0" expanded="false" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/Modification.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="559">
-          <caret line="61" column="46" lean-forward="false" selection-start-line="61" selection-start-column="46" selection-end-line="61" selection-end-column="46" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#755#756#0" expanded="true" />
-            <element signature="e#810#811#0" expanded="true" />
-            <element signature="e#844#845#0" expanded="true" />
-            <element signature="e#903#904#0" expanded="true" />
-            <element signature="e#960#961#0" expanded="true" />
-            <element signature="e#1004#1005#0" expanded="true" />
-            <element signature="e#1061#1062#0" expanded="true" />
-            <element signature="e#1111#1112#0" expanded="true" />
-            <element signature="e#1155#1156#0" expanded="true" />
-            <element signature="e#1185#1186#0" expanded="true" />
-            <element signature="e#1215#1216#0" expanded="true" />
-            <element signature="e#1267#1268#0" expanded="true" />
-            <element signature="e#1300#1301#0" expanded="true" />
-            <element signature="e#1353#1354#0" expanded="true" />
-            <element signature="e#1387#1388#0" expanded="true" />
-            <element signature="e#1424#1425#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/interfaces/Filter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" column="17" lean-forward="false" selection-start-line="5" selection-start-column="17" selection-end-line="5" selection-end-column="17" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1038,54 +764,337 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/interfaces/ReadableFilter.java">
+    <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_40.jdk/Contents/Home/src.zip!/java/lang/IllegalArgumentException.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" column="34" lean-forward="false" selection-start-line="6" selection-start-column="34" selection-end-line="6" selection-end-column="34" />
+        <state relative-caret-position="-223">
+          <caret line="40" column="11" lean-forward="false" selection-start-line="40" selection-start-column="11" selection-end-line="40" selection-end-column="11" />
+          <folding>
+            <element signature="e#592#593#0" expanded="false" />
+            <element signature="e#615#616#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$APPLICATION_HOME_DIR$/redist/annotations-java8.jar!/org/jetbrains/annotations/Contract.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="16" column="18" lean-forward="false" selection-start-line="16" selection-start-column="18" selection-end-line="16" selection-end-column="18" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/MemTable.java">
+    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/utils/Counter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="22" column="33" lean-forward="false" selection-start-line="22" selection-start-column="33" selection-end-line="22" selection-end-column="33" />
+        <state relative-caret-position="476">
+          <caret line="31" column="1" lean-forward="true" selection-start-line="31" selection-start-column="1" selection-end-line="31" selection-end-column="1" />
+          <folding>
+            <element signature="e#419#420#0" expanded="false" />
+            <element signature="e#461#462#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/MurMurHasher.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="10" column="7" lean-forward="true" selection-start-line="10" selection-start-column="7" selection-end-line="10" selection-end-column="7" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/SSTableWriter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-8">
+          <caret line="5" column="28" lean-forward="false" selection-start-line="5" selection-start-column="28" selection-end-line="5" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/interfaces/Hasher.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="6" column="19" lean-forward="false" selection-start-line="6" selection-start-column="19" selection-end-line="6" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/interfaces/StringHasher.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="160">
+          <caret line="8" column="0" lean-forward="true" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/interfaces/Filter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="160">
+          <caret line="8" column="0" lean-forward="true" selection-start-line="8" selection-start-column="0" selection-end-line="8" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/interfaces/WritableFilter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="100">
+          <caret line="5" column="46" lean-forward="false" selection-start-line="5" selection-start-column="46" selection-end-line="5" selection-end-column="46" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_40.jdk/Contents/Home/src.zip!/java/io/DataOutput.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-803">
+          <caret line="49" column="10" lean-forward="false" selection-start-line="49" selection-start-column="10" selection-end-line="49" selection-end-column="10" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_40.jdk/Contents/Home/src.zip!/java/io/DataInput.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-8026">
+          <caret line="148" column="10" lean-forward="false" selection-start-line="148" selection-start-column="10" selection-end-line="148" selection-end-column="10" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_40.jdk/Contents/Home/src.zip!/java/io/RandomAccessFile.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="234">
+          <caret line="796" column="21" lean-forward="false" selection-start-line="796" selection-start-column="21" selection-end-line="796" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/interfaces/Block.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="9" column="37" lean-forward="false" selection-start-line="9" selection-start-column="37" selection-end-line="9" selection-end-column="37" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#2965#2966#0" expanded="true" />
-            <element signature="e#2992#2993#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/DataLoader.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1540">
+          <caret line="77" column="38" lean-forward="false" selection-start-line="77" selection-start-column="38" selection-end-line="77" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/utils/RowCol.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="6" column="11" lean-forward="false" selection-start-line="6" selection-start-column="11" selection-end-line="6" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/blocks/FilterBlock.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="160">
+          <caret line="8" column="33" lean-forward="false" selection-start-line="8" selection-start-column="33" selection-end-line="8" selection-end-column="33" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/blocks/FilterBlock.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="197">
+          <caret line="10" column="13" lean-forward="false" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/blocks/IndexBlock.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="217">
+          <caret line="30" column="13" lean-forward="false" selection-start-line="30" selection-start-column="13" selection-end-line="30" selection-end-column="13" />
+          <folding>
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/AbstractDataLoader.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
+        <state relative-caret-position="200">
           <caret line="10" column="42" lean-forward="true" selection-start-line="10" selection-start-column="42" selection-end-line="10" selection-end-column="42" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/filters/BloomFilter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="237">
+          <caret line="17" column="11" lean-forward="false" selection-start-line="17" selection-start-column="11" selection-end-line="17" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/filters/BitSet.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="20">
+          <caret line="7" column="13" lean-forward="false" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/blocks/ComponentFile.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="425">
+          <caret line="95" column="62" lean-forward="false" selection-start-line="95" selection-start-column="62" selection-end-line="95" selection-end-column="62" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/MemDataLoader.java">
+    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/blocks/DataBlock.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="542">
-          <caret line="55" column="5" lean-forward="true" selection-start-line="55" selection-start-column="5" selection-end-line="55" selection-end-column="5" />
+        <state relative-caret-position="200">
+          <caret line="10" column="13" lean-forward="false" selection-start-line="10" selection-start-column="13" selection-end-line="10" selection-end-column="13" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#1746#1747#0" expanded="true" />
-            <element signature="e#1782#1783#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/blocks/FilterBlockLoader.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="780">
+          <caret line="40" column="18" lean-forward="true" selection-start-line="40" selection-start-column="18" selection-end-line="40" selection-end-column="18" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/blocks/Descriptor.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="140">
+          <caret line="7" column="13" lean-forward="false" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/blocks/AbstractSSTableBlock.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="240">
+          <caret line="12" column="22" lean-forward="false" selection-start-line="12" selection-start-column="22" selection-end-line="12" selection-end-column="22" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/blocks/AbstractBlock.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="200">
+          <caret line="10" column="22" lean-forward="false" selection-start-line="10" selection-start-column="22" selection-end-line="10" selection-end-column="22" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/blocks/DataBlockLoader.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-283">
+          <caret line="17" column="11" lean-forward="false" selection-start-line="17" selection-start-column="11" selection-end-line="17" selection-end-column="11" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/blocks/IndexBlockLoader.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1600">
+          <caret line="82" column="9" lean-forward="true" selection-start-line="82" selection-start-column="9" selection-end-line="82" selection-end-column="9" />
+          <folding>
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/SSTableReader.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-410">
-          <caret line="30" column="27" lean-forward="true" selection-start-line="30" selection-start-column="27" selection-end-line="30" selection-end-column="27" />
+        <state relative-caret-position="497">
+          <caret line="90" column="20" lean-forward="false" selection-start-line="90" selection-start-column="20" selection-end-line="90" selection-end-column="20" />
           <folding>
             <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/SSTable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="140">
+          <caret line="7" column="13" lean-forward="false" selection-start-line="7" selection-start-column="13" selection-end-line="7" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/blocks/DiskSSTableBlock.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="340">
+          <caret line="17" column="31" lean-forward="true" selection-start-line="17" selection-start-column="31" selection-end-line="17" selection-end-column="31" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/utils/Modification.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="225">
+          <caret line="31" column="25" lean-forward="false" selection-start-line="31" selection-start-column="25" selection-end-line="31" selection-end-column="25" />
+          <folding>
+            <element signature="e#689#690#0" expanded="true" />
+            <element signature="e#744#745#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/utils/Timed.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="200">
+          <caret line="10" column="17" lean-forward="false" selection-start-line="10" selection-start-column="17" selection-end-line="10" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/blocks/MemSSTableBlock.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-243">
+          <caret line="15" column="4" lean-forward="false" selection-start-line="15" selection-start-column="4" selection-end-line="15" selection-end-column="4" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1794#1795#0" expanded="true" />
+            <element signature="e#1830#1831#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/MemTable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="537">
+          <caret line="112" column="1" lean-forward="true" selection-start-line="112" selection-start-column="1" selection-end-line="112" selection-end-column="1" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#933#934#0" expanded="true" />
+            <element signature="e#980#981#0" expanded="true" />
+            <element signature="e#1940#1941#0" expanded="true" />
+            <element signature="e#2015#2016#0" expanded="true" />
+            <element signature="e#2204#2205#0" expanded="true" />
+            <element signature="e#2264#2265#0" expanded="true" />
+            <element signature="e#3090#3091#0" expanded="true" />
+            <element signature="e#3117#3118#0" expanded="true" />
           </folding>
         </state>
       </provider>

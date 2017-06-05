@@ -1,8 +1,8 @@
 package cse291.lsmdb.io.interfaces;
 
 /**
- * Created by musteryu on 2017/5/29.
+ * Created by musteryu on 2017/6/3.
  */
-public interface Filter extends ReadableFilter {
-    void add(String key);
+public interface Filter {
+    boolean isPresent(String key);
 }

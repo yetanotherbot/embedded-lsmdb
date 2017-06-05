@@ -1,25 +1,24 @@
-package cse291.lsmdb.io.sstable;
+package cse291.lsmdb.io.sstable.blocks;
 
+import cse291.lsmdb.utils.Modification;
+import cse291.lsmdb.utils.RowCol;
 import cse291.lsmdb.utils.Timed;
 
-import java.io.IOException;
 import java.util.*;
 
 /**
  * Created by musteryu on 2017/6/3.
  */
-public class MemDataLoader extends AbstractDataLoader {
-    private String namespace, columnFamily;
+public class MemSSTableBlock extends AbstractSSTableBlock {
+    private Descriptor desc;
     private Map<RowCol, Modification> modifications;
 
-    public MemDataLoader(
-            String namespace,
-            String columnFamily,
+    public MemSSTableBlock(
+            Descriptor desc,
             Map<RowCol, Timed<String>> puts,
             Map<RowCol, Long> removes
     ) {
-        this.namespace = namespace;
-        this.columnFamily = columnFamily;
+        this.desc = desc;
         Set<RowCol> rcs = new TreeSet<>();
         rcs.addAll(puts.keySet());
         rcs.addAll(removes.keySet());
@@ -35,20 +34,24 @@ public class MemDataLoader extends AbstractDataLoader {
         }
     }
 
+    public MemSSTableBlock(Descriptor desc, Map<RowCol, Modification> modifications) {
+        this.desc = desc;
+        this.modifications = modifications;
+    }
+
     public boolean isRemoved(String row, String col) {
         RowCol rc = new RowCol(row, col);
         return modifications.containsKey(rc) && modifications.get(rc).isRemove();
     }
 
     @Override
-    public Timed<String> get(String row, String col) throws NoSuchElementException, IOException {
+    public Modification get(String row, String col) throws NoSuchElementException {
         RowCol rc = new RowCol(row, col);
         if (modifications.containsKey(rc)) {
-            Modification m = modifications.get(rc);
-            if (m.isPut()) return m.getIfPresent();
+            return modifications.get(rc);
         }
 
-        throw new NoSuchElementException("no such element in this MemDataLoader");
+        throw new NoSuchElementException("no such element in this MemSSTableBlock");
     }
 
     public String getName() {

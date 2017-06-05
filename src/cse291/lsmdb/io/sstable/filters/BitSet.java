@@ -1,4 +1,4 @@
-package cse291.lsmdb.io.sstable;
+package cse291.lsmdb.io.sstable.filters;
 
 import org.jetbrains.annotations.Contract;
 

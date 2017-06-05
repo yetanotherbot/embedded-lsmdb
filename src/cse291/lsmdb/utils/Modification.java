@@ -1,8 +1,4 @@
-package cse291.lsmdb.io.sstable;
-
-import cse291.lsmdb.utils.Timed;
-
-import java.util.Optional;
+package cse291.lsmdb.utils;
 
 /**
  * Created by musteryu on 2017/6/3.
@@ -15,14 +11,13 @@ public final class Modification {
 
     private static final Modification NOTHING = new Modification();
 
-
-    public Modification(Timed<String> put) {
+    private Modification(Timed<String> put) {
         isPut = true;
         isNothing = false;
         val = put;
     }
 
-    public Modification(long timestamp) {
+    private Modification(long timestamp) {
         isPut = false;
         isNothing = false;
         val = new Timed<>(null, timestamp);

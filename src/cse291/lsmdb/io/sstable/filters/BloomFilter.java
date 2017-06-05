@@ -1,12 +1,12 @@
-package cse291.lsmdb.io.sstable;
+package cse291.lsmdb.io.sstable.filters;
 
-import cse291.lsmdb.io.interfaces.Filter;
+import cse291.lsmdb.io.interfaces.WritableFilter;
 import cse291.lsmdb.io.interfaces.StringHasher;
 
 /**
  * Created by musteryu on 2017/5/29.
  */
-public class BloomFilter implements Filter {
+public class BloomFilter implements WritableFilter {
     private BitSet bitset;
     private StringHasher hasher;
 
