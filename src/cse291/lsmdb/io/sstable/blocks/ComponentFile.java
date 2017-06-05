@@ -60,6 +60,70 @@ public class ComponentFile extends RandomAccessFile {
     }
 
     /**
+     * Write the name of a RowCol pair
+     * @param rowCol the RowCol pair to write
+     * @throws IOException if an I/O error happens
+     */
+    public void writeRowNameColName(RowCol rowCol) throws IOException{
+        String rowName = rowCol.left;
+        int rowNameLength = rowName.getBytes().length;
+        String colName = rowCol.right;
+        int colNameLength = colName.getBytes().length;
+
+        writeShort(rowNameLength);
+        write(rowName.getBytes());
+        writeShort(colNameLength);
+        write(colName.getBytes());
+    }
+
+    /**
+     * Write the BloomFilter of the SSTableBlock as 128 bit longs
+     * @param filter the BloomFilter of the data
+     * @throws IOException if an I/O error happens
+     */
+    public void writeFilter(Filter filter) throws IOException{
+        long[] filterLongs = ((BloomFilter)filter).toLongs();
+        for (Long filterLong: filterLongs){
+            writeLong(filterLong);
+        }
+    }
+
+    /**
+     * Write a column-value pair from the current position. The method reads a column, its value
+     * and timestamp from the current position and shift the file pointer to the starting position
+     * of next column. The format of a column in the data file is:
+     * Row Length              | Row Data  | Data Length             | Data      | Timestamp
+     * unsigned 16 bits (char) | varlength | unsigned 16 bits (char) | varlength | long
+     * @param pair a columnName:Modification pair with timeStamp to be written
+     * @throws IOException if an I/O error happens
+     */
+    public void writeColumnModification(Pair<String, Modification> pair) throws IOException{
+        // Write the columnName length and columnName
+        String columnName = pair.left;
+        int columnNameLength = columnName.getBytes().length;
+
+        writeShort(columnNameLength);
+        write(columnName.getBytes());
+
+        // Write the columnValue length and column value
+        // If it is a remove, the length is Short.MaxValue and no value will be written
+        Modification mod = pair.right;
+        if(mod.isRemove()){
+            writeShort(Short.MAX_VALUE);
+        } else {
+            String columnValue = mod.getIfPresent().get();
+            int columnValueLength = columnValue.getBytes().length;
+
+            writeShort(columnValueLength);
+            write(columnValue.getBytes());
+        }
+
+        // Write the timestamp
+        long timeStamp = pair.right.getTimestamp();
+        writeLong(timeStamp);
+    }
+
+    /**
      * Reads offsets from the file. The file pointer will be pushed forward.
      * @param size number of offsets
      * @return offsets
