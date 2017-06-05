@@ -95,7 +95,7 @@ public class ComponentFile extends RandomAccessFile {
      * Reads a column-value pair from the current position. The method reads a column, its value
      * and timestamp from the current position and shift the file pointer to the starting position
      * of next column of next row. The format of a column in the data file is:
-     * Row Length              | Row Data  | Data Length             | Data      | Timestamp
+     * Col Name Length         | Col Name  | Data Length             | Data      | Timestamp
      * unsigned 16 bits (char) | varlength | unsigned 16 bits (char) | varlength | long
      * @return the next column-value pair of the file
      * @throws EOFException if the file reaches the end in the process of reading the whole column
