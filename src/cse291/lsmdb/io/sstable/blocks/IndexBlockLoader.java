@@ -74,8 +74,8 @@ public class IndexBlockLoader {
         int[] offsets = c.readOffsets(offsetsNum);
         Pair<RowCol, RowCol>[] ranges = new Pair[offsetsNum];
         for (int i = 0; i < offsetsNum; i++) {
-            RowCol rc1 = c.readRowCol();
-            RowCol rc2 = c.readRowCol();
+            RowCol rc1 = c.readRowNameColName();
+            RowCol rc2 = c.readRowNameColName();
             if (rc1.compareTo(rc2) > 0) {
                 throw new RuntimeException("should not happen, first row col is larger than the last one");
             }

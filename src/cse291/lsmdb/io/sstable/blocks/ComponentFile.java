@@ -62,8 +62,8 @@ public class ComponentFile extends RandomAccessFile {
             }
         }
     }
-
-    public RowCol readRowCol() throws IOException {
+    
+    public RowCol readRowNameColName() throws IOException {
         byte[] rowBytes = readVarLength(VarLengthType.VAR_LENGTH_16);
         String row = new String(rowBytes);
 
