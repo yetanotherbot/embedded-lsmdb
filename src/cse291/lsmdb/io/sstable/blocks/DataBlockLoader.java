@@ -3,14 +3,17 @@ package cse291.lsmdb.io.sstable.blocks;
 import cse291.lsmdb.io.interfaces.Filter;
 import cse291.lsmdb.io.interfaces.StringHasher;
 import cse291.lsmdb.utils.Modification;
+import cse291.lsmdb.utils.RowCol;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 /**
  * Created by musteryu on 2017/6/4.
  */
-public class DataBlockLoader {
+public class DataBlockLoader extends AbstractSSTableBlock {
     private final DataBlock dataBlock;
     private final int bloomFilterLen;
     private final StringHasher hasher;
@@ -21,7 +24,8 @@ public class DataBlockLoader {
         this.hasher = hasher;
     }
 
-    public Modification get(String row, String col) {
+    @Override
+    public Modification get(String row, String col) throws NoSuchElementException {
         try {
             ComponentFile component = dataBlock.getComponentFile();
             component.seek(0);
@@ -55,5 +59,10 @@ public class DataBlockLoader {
             ioe.printStackTrace();
             throw new NoSuchElementException("could not find the element due to IOException: " + ioe.getMessage());
         }
+    }
+
+    public Map<RowCol, Modification> extractModification() {
+        //TODO: read the map from file
+        return Collections.unmodifiableMap(null);
     }
 }

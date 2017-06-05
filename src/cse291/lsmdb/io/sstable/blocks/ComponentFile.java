@@ -77,7 +77,7 @@ public class ComponentFile extends RandomAccessFile {
      * Reads a filter from the current position with specified number of longs and hasher factory
      * function.
      * @param numLongs num of longs
-     * @param hasherFactory factory function to create a StringHasher
+     * @param hasher a StringHasher
      * @return a bloom filter associated with a string hasher
      * @throws EOFException if the file reaches the end in the process of reading the filter
      * @throws IOException if an I/O error happens
