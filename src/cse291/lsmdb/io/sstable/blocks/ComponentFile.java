@@ -49,6 +49,20 @@ public class ComponentFile extends RandomAccessFile {
         }
     }
 
+    public void writeVarLength(VarLengthType varLengthType, int value) throws IOException{
+        switch (varLengthType) {
+            case VAR_LENGTH_8: {
+                writeByte(value);
+            }
+            case VAR_LENGTH_16: {
+                writeChar(value);
+            }
+            case VAR_LENGTH_32: default: {
+                writeInt(value);
+            }
+        }
+    }
+
     public RowCol readRowCol() throws IOException {
         byte[] rowBytes = readVarLength(VarLengthType.VAR_LENGTH_16);
         String row = new String(rowBytes);
