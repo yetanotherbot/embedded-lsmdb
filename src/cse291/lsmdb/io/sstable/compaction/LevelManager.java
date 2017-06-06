@@ -1,11 +1,10 @@
 package cse291.lsmdb.io.sstable.compaction;
 
-import cse291.lsmdb.io.interfaces.StringHasher;
 import cse291.lsmdb.io.sstable.blocks.*;
 import cse291.lsmdb.utils.Modification;
-import cse291.lsmdb.utils.RowCol;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
@@ -16,12 +15,14 @@ public class LevelManager {
     private final int level;
     private final String column;
     private ReentrantReadWriteLock lock;
+    private AtomicBoolean shouldWait;
 
     public LevelManager(Descriptor desc, String column, int level) {
         this.desc = desc;
         this.level = level;
         this.column = column;
         this.lock = new ReentrantReadWriteLock(true);
+        this.shouldWait = new AtomicBoolean(false);
     }
 
     private IndexBlock getIndexBlock() {
@@ -32,8 +33,11 @@ public class LevelManager {
         return new IndexBlockLoader(getIndexBlock());
     }
 
-    public Optional<String> get(String row) {
+    public Optional<String> get(String row) throws InterruptedException {
         try {
+            while (shouldWait.get()) {
+                wait();
+            }
             lock.readLock().lock();
             int index = getIndexBlockLoader().lookup(row);
             if (index != -1) {
@@ -68,11 +72,18 @@ public class LevelManager {
     }
 
     public void freeze() {
-        lock.readLock().lock();
+        shouldWait.set(true);
+        lock.writeLock().lock();
     }
 
     public void unfreeze() {
-        lock.readLock().unlock();
+        shouldWait.set(false);
+        notifyAll();
+        lock.writeLock().unlock();
+    }
+
+    public void renameAndGC() {
+        //TODO rename and gc
     }
 
     public ArrayList<Map<String, Modification>> compact(Map<String, Modification> toCompact) {

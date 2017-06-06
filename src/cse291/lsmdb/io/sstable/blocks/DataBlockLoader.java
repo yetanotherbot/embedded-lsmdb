@@ -34,7 +34,7 @@ public class DataBlockLoader extends AbstractSSTableBlock {
     public Modification get(String row) throws NoSuchElementException {
         ComponentFile c = null;
         try {
-            c = dataBlock.getComponentFile();
+            c = dataBlock.getReadableComponentFile();
             Filter filter = c.readFilter(bloomFilterBits / Long.SIZE, longs -> new BloomFilter(longs, hasher));
             if (!filter.isPresent(row)) {
                 throw new NoSuchElementException("no such element");
@@ -62,7 +62,7 @@ public class DataBlockLoader extends AbstractSSTableBlock {
     public Map<String, Modification> extractModification() throws IOException {
         ComponentFile c = null;
         try {
-            c = dataBlock.getComponentFile();
+            c = dataBlock.getReadableComponentFile();
             for (int i = 0; i < bloomFilterBits / Long.SIZE; i++) {
                 c.readLong();
             }

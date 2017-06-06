@@ -103,9 +103,15 @@ public class MemTable {
         }
     }
 
-    public void cleanup() {
+    private void cleanup() {
         modifications = new TreeMap<>();
         bytesNum = 0;
+    }
+
+    public Map<String, Modification> steal() {
+        Map<String, Modification> mods = modifications;
+        cleanup();
+        return mods;
     }
 
     public static class MemTableFull extends Exception {}

@@ -3,7 +3,6 @@ package cse291.lsmdb.io.sstable.blocks;
 import cse291.lsmdb.io.interfaces.Filter;
 import cse291.lsmdb.io.sstable.filters.BloomFilter;
 import cse291.lsmdb.utils.Modification;
-import cse291.lsmdb.utils.Timed;
 
 import java.io.*;
 import java.util.*;
@@ -28,7 +27,7 @@ public class DataBlockDumper {
     ) throws IOException {
         ComponentFile c = null;
         try {
-            c = tmpDataBlock.getComponentFile();
+            c = tmpDataBlock.getWritableComponentFile();
             long[] longs = toLongs.apply(filter);
             if (longs.length != filterBits) throw new IOException("filter length mismatch");
             c.writeFilter(filter, toLongs);

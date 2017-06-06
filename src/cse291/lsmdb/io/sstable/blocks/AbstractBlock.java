@@ -11,7 +11,7 @@ import java.io.IOException;
 abstract class AbstractBlock implements Block {
     public static final String DEFAULT_SUFFIX = ".db";
     public abstract File getFile() throws IOException;
-    public ComponentFile getComponentFile() throws IOException {
+    public ComponentFile getReadableComponentFile() throws IOException {
         return new ComponentFile(getFile());
     }
 }

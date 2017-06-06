@@ -43,7 +43,7 @@ public class IndexBlockLoader {
     }
 
     public ArrayList<Pair<String, String>> getRanges() throws IOException {
-        ComponentFile c = indexBlock.getComponentFile();
+        ComponentFile c = indexBlock.getReadableComponentFile();
         ArrayList<Pair<String, String>> ranges = new ArrayList<>();
         while (c.getFilePointer() < c.length()) {
             String r1 = c.readLine();

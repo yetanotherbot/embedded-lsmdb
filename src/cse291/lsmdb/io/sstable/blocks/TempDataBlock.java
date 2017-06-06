@@ -27,4 +27,12 @@ public class TempDataBlock extends AbstractBlock {
         );
         return new File(colDir, filename);
     }
+
+    public ComponentFile getWritableComponentFile() throws IOException {
+        if (!getFile().exists())
+            getFile().createNewFile();
+        if (!getFile().canWrite())
+            getFile().setWritable(true);
+        return new ComponentFile(getFile(), "w");
+    }
 }

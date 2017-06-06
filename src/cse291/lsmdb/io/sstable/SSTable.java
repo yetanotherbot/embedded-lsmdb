@@ -2,12 +2,10 @@ package cse291.lsmdb.io.sstable;
 
 
 import cse291.lsmdb.io.sstable.blocks.Descriptor;
-import cse291.lsmdb.io.sstable.blocks.IndexBlockLoader;
 import cse291.lsmdb.io.sstable.compaction.LevelManager;
+import cse291.lsmdb.utils.Modification;
 
-import java.io.IOException;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Created by musteryu on 2017/5/30.
@@ -28,7 +26,7 @@ public class SSTable {
         mt = new MemTable(desc, column, MemTable.DEFAULT_BYTES_LIMIT);
     }
 
-    public Optional<String> get(String row) {
+    public Optional<String> get(String row) throws InterruptedException {
         try {
             String v = mt.get(row);
             return Optional.of(v);
@@ -47,8 +45,21 @@ public class SSTable {
         try {
             mt.put(row, val);
         } catch (MemTable.MemTableFull full) {
-
+            Map<String, Modification> mods = mt.steal();
+            for (LevelManager levelManager: levelManagers) {
+                ArrayList<Map<String, Modification>> blicks = levelManager.compact(mods);
+                levelManager.freeze();
+                levelManager.renameAndGC();
+                levelManager.unfreeze();
+                mods = join(blicks);
+            }
+            if (mods != null) throw new RuntimeException("out of storage");
         }
         return true;
+    }
+
+    private Map<String, Modification> join(Collection<Map<String, Modification>> mods) {
+        //TODO
+        return null;
     }
 }
