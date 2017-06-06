@@ -91,17 +91,14 @@ public class LevelManager {
     /**
      * Method to split a Map of <String, Modification> to maps which will be merged into individual data blocks
      * @param toCompact a Map of <String, Modification> to be split
-     * @return ArrayList of maps to be merged into every data block in this level
+     * @return A Map of Maps to be merged into every data block in this level
      * @throws IOException in case of IO Exception
      */
-    private ArrayList<Map<String, Modification>> split_map(Map<String, Modification> toCompact) throws IOException {
+    private Map<Integer, Map<String, Modification>> split_map(Map<String, Modification> toCompact) throws IOException {
 
         // Create the list of Maps and fill with empty Maps
-        ArrayList<Map<String, Modification>> split_maps = new ArrayList<>();
+        Map<Integer, Map<String, Modification>> split_maps = new HashMap<>();
         IndexBlockLoader indexBlockLoader = this.getIndexBlockLoader();
-        for(int i = 0; i < indexBlockLoader.getRanges().size(); i++){
-            split_maps.add(new TreeMap<>());
-        }
 
         ArrayList<Pair<String, String>> ranges = indexBlockLoader.getRanges(); // Get dataBlock ranges
 
@@ -116,6 +113,9 @@ public class LevelManager {
             if(rowName.compareTo(end) > 0 && currentRangeIndex < ranges.size()-1){
                 currentRangeIndex += 1;
                 end = ranges.get(currentRangeIndex).right;
+            }
+            if(!split_maps.containsKey(currentRangeIndex)){
+                split_maps.put(currentRangeIndex, new TreeMap<>());
             }
             split_maps.get(currentRangeIndex).put(rowName,colValue);
         }
