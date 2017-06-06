@@ -29,17 +29,20 @@ import java.io.IOException;
 public class IndexBlock extends AbstractBlock {
     private final Descriptor desc;
     private final int level;
+    private final String column;
 
-    public IndexBlock(Descriptor desc, int level) {
+    public IndexBlock(Descriptor desc, String column, int level) {
         this.desc = desc;
         this.level = level;
+        this.column = column;
     }
 
     @Override
     public File getFile() throws IOException {
+        File colDir = new File(desc.getDir(), column);
         String filename = String.format(
                 "%d_Index%s", level, DEFAULT_SUFFIX
         );
-        return new File(desc.getDir(), filename);
+        return new File(colDir, filename);
     }
 }

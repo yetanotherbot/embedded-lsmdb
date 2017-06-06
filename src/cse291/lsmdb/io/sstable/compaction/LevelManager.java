@@ -5,9 +5,7 @@ import cse291.lsmdb.io.sstable.blocks.*;
 import cse291.lsmdb.utils.Modification;
 import cse291.lsmdb.utils.RowCol;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
@@ -16,57 +14,51 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class LevelManager {
     private final Descriptor desc;
     private final int level;
+    private final String column;
     private ReentrantReadWriteLock lock;
 
-    public LevelManager(Descriptor desc, int level) {
+    public LevelManager(Descriptor desc, String column, int level) {
         this.desc = desc;
         this.level = level;
+        this.column = column;
         this.lock = new ReentrantReadWriteLock(true);
     }
 
-    public FilterBlock getFilterBlock() {
+    private IndexBlock getIndexBlock() {
+        return new IndexBlock(desc, column, level);
+    }
+
+    private IndexBlockLoader getIndexBlockLoader() {
+        return new IndexBlockLoader(getIndexBlock());
+    }
+
+    public Optional<String> get(String row) {
         try {
             lock.readLock().lock();
-            return new FilterBlock(desc, level);
+            int index = getIndexBlockLoader().lookup(row);
+            if (index != -1) {
+                DataBlock dataBlock = new DataBlock(desc, column, level, index);
+                DataBlockLoader dataBlockLoader = new DataBlockLoader(dataBlock);
+                Modification mod = dataBlockLoader.get(row);
+                if (mod.isPut()) {
+                    return Optional.of(mod.getIfPresent().get());
+                }
+            }
+            return Optional.empty();
+        } catch (NoSuchElementException e) {
+            return Optional.empty();
         } finally {
             lock.readLock().unlock();
         }
     }
 
-    public FilterBlockLoader getFilterBlockLoader(StringHasher hasher) {
-        try {
-            lock.readLock().lock();
-            return new FilterBlockLoader(getFilterBlock(), hasher);
-        } finally {
-            lock.readLock().unlock();
-        }
-    }
-
-    public IndexBlock getIndexBlock() {
-        try {
-            lock.readLock().lock();
-            return new IndexBlock(desc, level);
-        } finally {
-            lock.readLock().unlock();
-        }
-    }
-
-    public IndexBlockLoader getIndexBlockLoader() {
-        try {
-            lock.readLock().lock();
-            return new IndexBlockLoader(getIndexBlock());
-        } finally {
-            lock.readLock().unlock();
-        }
-    }
-
-    public DataBlock[] getDataBlocks() {
+    private DataBlock[] getDataBlocks() {
         try {
             lock.readLock().lock();
             String[] filenames = desc.getDir().list((dir, name) -> DataBlock.isDataBlock(name));
             DataBlock[] blocks = new DataBlock[filenames.length];
             for (int i = 0; i < filenames.length; i++) {
-                blocks[i] = DataBlock.fromFileName(desc, filenames[i]).get();
+                blocks[i] = DataBlock.fromFileName(desc, column, filenames[i]).get();
             }
             Arrays.sort(blocks);
             return blocks;
@@ -83,7 +75,7 @@ public class LevelManager {
         lock.readLock().unlock();
     }
 
-    public ArrayList<Map<RowCol, Modification>> compact(Map<RowCol, Modification> toCompact) {
+    public ArrayList<Map<String, Modification>> compact(Map<String, Modification> toCompact) {
         return null;
     }
 

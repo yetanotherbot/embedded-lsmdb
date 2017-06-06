@@ -15,12 +15,14 @@ import java.util.concurrent.Executors;
 public class Compactor {
     private LevelManager[] levelManagers;
     private Descriptor desc;
+    private final String column;
     private ExecutorService threadPool;
 
-    public Compactor(Descriptor desc, int levels) {
+    public Compactor(Descriptor desc, String column, int levels) {
+        this.column = column;
         levelManagers = new LevelManager[levels];
         for (int i = 0; i < levels; ++i) {
-            levelManagers[i] = new LevelManager(desc, i);
+            levelManagers[i] = new LevelManager(desc, column, i);
         }
         this.threadPool = Executors.newCachedThreadPool();
     }

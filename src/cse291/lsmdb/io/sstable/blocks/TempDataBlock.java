@@ -9,19 +9,22 @@ import java.io.IOException;
 public class TempDataBlock extends AbstractBlock {
     private final Descriptor desc;
     private int level, index;
+    private final String column;
 
-    public TempDataBlock(Descriptor desc, int level, int index) {
+    public TempDataBlock(Descriptor desc, String column, int level, int index) {
         this.desc = desc;
         this.level = level;
         this.index = index;
+        this.column = column;
     }
 
     @Override
     public File getFile() throws IOException {
         File dir = desc.getDir();
+        File colDir = new File(dir, column);
         String filename = String.format(
             "%d_%d_Data_Temp%s", level, index, DEFAULT_SUFFIX
         );
-        return new File(dir, filename);
+        return new File(colDir, filename);
     }
 }

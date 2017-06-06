@@ -1,9 +1,7 @@
 package cse291.lsmdb.io.sstable;
 
 import cse291.lsmdb.io.sstable.blocks.Descriptor;
-import cse291.lsmdb.utils.Counter;
 import cse291.lsmdb.utils.Modification;
-import cse291.lsmdb.utils.RowCol;
 import cse291.lsmdb.utils.Timed;
 
 import java.util.Map;
@@ -14,100 +12,101 @@ import java.util.TreeMap;
  * Created by musteryu on 2017/6/1.
  */
 public class MemTable {
-    private Descriptor desc;
-    private Map<RowCol, Modification> modifications;
-    private Counter<String> rowRefcnt; // counter of cols per row
+    private final Descriptor desc;
+    private Map<String, Modification> modifications;
+    private final String column;
     private int bytesLimit;
     private int bytesNum;
-    public static final int DEFAULT_BYTES_LIMIT = 1 << 16; // 64KB
+    public static final int DEFAULT_BYTES_LIMIT = 16 * 1024 * 1024; // 16 MB
 
-    public MemTable(Descriptor desc, int bytesLimit) {
+    public MemTable(Descriptor desc, String column, int bytesLimit) {
         this.desc = desc;
         this.modifications = new TreeMap<>();
-        this.rowRefcnt = new Counter<>();
         this.bytesLimit = bytesLimit;
         this.bytesNum = 0;
+        this.column = column;
     }
 
-    public MemTable(Descriptor desc) {
-        this(desc, DEFAULT_BYTES_LIMIT);
+    public MemTable(Descriptor desc, String column) {
+        this(desc, column, DEFAULT_BYTES_LIMIT);
     }
 
-    private void addModification(String row, String col, Modification curr) {
-        if (rowRefcnt.getCnt(row) == 0) {
-            bytesNum += bytelen(row);
+    private boolean addModification(String row, Modification curr) throws MemTableFull {
+        try {
+            if (modifications.containsKey(row)) {
+                Modification last = modifications.get(row);
+                if (last.getTimestamp() > curr.getTimestamp()) return false;
+                if (last.isPut()) {
+                    bytesNum -= bytelen(last.getIfPresent().get());
+                }
+                if (curr.isPut()) {
+                    bytesNum += bytelen(curr.getIfPresent().get());
+                }
+            } else {
+                bytesNum += bytelen(curr.getIfPresent().get());
+                bytesNum += Long.BYTES;
+            }
+            return true;
+        } finally {
+            checkLimit();
         }
-        rowRefcnt.inc(row);
-        RowCol rc = new RowCol(row, col);
-        if (!modifications.containsKey(rc)) {
-            bytesNum += bytelen(col) + Long.BYTES;
-        } else {
-            Modification last = modifications.get(rc);
-            if (last.getTimestamp() > curr.getTimestamp()) return;
-            int lastLen = last.isRemove() ? 0 : bytelen(last.getIfPresent().get());
-            bytesNum -= lastLen;
-        }
-        if (curr.isPut()) {
-            bytesNum += bytelen(curr.getIfPresent().get());
-        }
-        modifications.put(rc, curr);
     }
 
-    public void put(String row, String col, String val, long timestamp) {
-        addModification(row, col, Modification.put(new Timed<String>(val)));
+    public boolean put(String row, String val, long timestamp) throws MemTableFull {
+        Modification mod = Modification.put(new Timed<>(val, timestamp));
+        return addModification(row, mod);
     }
 
-    public void put(String row, String col, String val) {
-        addModification(row, col, Modification.put(Timed.now(val)));
+    public boolean put(String row, String val) throws MemTableFull {
+        return addModification(row, Modification.put(Timed.now(val)));
     }
 
-    public void remove(String row, String col, long timestamp) {
-        addModification(row, col, Modification.remove(timestamp));
+    public boolean remove(String row, long timestamp) throws MemTableFull {
+        Modification mod = Modification.remove(timestamp);
+        return addModification(row, mod);
     }
 
-    public void remove(String row, String col) {
-        remove(row, col, System.currentTimeMillis());
+    public boolean remove(String row) throws MemTableFull {
+        return remove(row, System.currentTimeMillis());
     }
+
 
     private int bytelen(String s) {
         return s.getBytes().length;
     }
 
-    public String get(String row, String col) {
-        RowCol rc = new RowCol(row, col);
-        if (!modifications.containsKey(rc)) {
-            return getFromSSTable(row, col);
-        } else if (modifications.get(rc).isRemove()){
+    /**
+     * Gets an element from the MemTable if it exists
+     * @throws NoSuchElementException if the element is not present in the MemTable
+     */
+    public String get(String row) throws NoSuchElementException {
+        if (!modifications.containsKey(row)) {
+            throw new NoSuchElementException(String.format(
+                    "the element is not in memtable: (col: %s, row %s)",
+                    column, row
+            ));
+        } else if (modifications.get(row).isRemove()){
             // if no put happened or the put is stale
             throw new NoSuchElementException(String.format(
-                    "the element is already deleted: %s/%s/(row %s, col %s)",
-                    desc.ns, desc.cf, row, col
+                    "the element is already deleted: %s/%s/(col %s, row %s)",
+                    desc.ns, desc.cf, row, column
             ));
         }
-        Modification m = modifications.get(rc);
+        Modification m = modifications.get(row);
         if (m.isPut()) return m.getIfPresent().get();
         throw new NoSuchElementException("no such element, reason unknown");
     }
 
-    private String getFromSSTable(String row, String col) {
-        return null;
-    }
-
-    private void checkLimit() {
+    private void checkLimit() throws MemTableFull {
         if (bytesNum > bytesLimit) {
-            Map<RowCol, Modification> modifications = this.modifications;
-            cleanup();
-            persist(modifications);
+            throw new MemTableFull();
         }
     }
 
-    private void cleanup() {
+    public void cleanup() {
         modifications = new TreeMap<>();
         bytesNum = 0;
-        rowRefcnt = new Counter<>();
     }
 
-    private void persist(Map<RowCol, Modification> modifications) {
-        // TODO persist to SSTable L0 and L0 persists to L1 and so on...
-    }
+    public static class MemTableFull extends Exception {}
 }

@@ -2,71 +2,85 @@ package cse291.lsmdb.io.sstable.blocks;
 
 import cse291.lsmdb.io.interfaces.Filter;
 import cse291.lsmdb.io.interfaces.StringHasher;
+import cse291.lsmdb.io.sstable.filters.BloomFilter;
 import cse291.lsmdb.utils.Modification;
-import cse291.lsmdb.utils.RowCol;
+import cse291.lsmdb.utils.Timed;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.Collections;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.TreeMap;
 
 /**
  * Created by musteryu on 2017/6/4.
  */
 public class DataBlockLoader extends AbstractSSTableBlock {
     private final DataBlock dataBlock;
-    private final int bloomFilterLen;
+    private final int bloomFilterBits;
     private final StringHasher hasher;
 
-    public DataBlockLoader(DataBlock block, int bloomFilterLen, StringHasher hasher) {
+    public DataBlockLoader(DataBlock block, int bloomFilterBits, StringHasher hasher) {
         dataBlock = block;
-        this.bloomFilterLen = bloomFilterLen;
+        this.bloomFilterBits = bloomFilterBits;
         this.hasher = hasher;
     }
 
     public DataBlockLoader(DataBlock block) {
-        this(block, DEFAULT_BLOOM_FILTER_LEN, DEFAULT_HASHER);
+        this(block, DEFAULT_BLOOM_FILTER_BITS, DEFAULT_HASHER);
     }
 
     @Override
-    public Modification get(String row, String col) throws NoSuchElementException {
+    public Modification get(String row) throws NoSuchElementException {
+        ComponentFile c = null;
         try {
-            ComponentFile component = dataBlock.getComponentFile();
-            component.seek(0);
-            while (component.getFilePointer() < component.length()) {
-                char currRowLen = component.readChar();
-                byte[] currRowBytes = new byte[currRowLen];
-                component.read(currRowBytes, 0, currRowLen);
-                String currRow = new String(currRowBytes);
-                if (currRow.compareTo(row) < 0) {
-                    // shift the the position of <last column's absolute offset> of the current row
-                    component.readInt();
-                    int lastColOffset = component.readInt();
-                    component.seek(lastColOffset);
-                    component.readColumnModification();
-                } else if (currRow.equals(row)) {
-                    int firstColOffset = component.readInt();
-                    int lastColOffset = component.readInt();
-                    Filter filter = component.readFilter(bloomFilterLen / Long.SIZE, hasher);
-                    if (!filter.isPresent(col)) {
-                        // not present in the current
-                        throw new NoSuchElementException();
-                    } else {
-                        char indexLen = component.readChar();
-                        int[] index = new int[indexLen];
-                        return component.binarySearch(col, index);
-                    }
-                } else break;
+            c = dataBlock.getComponentFile();
+            Filter filter = c.readFilter(bloomFilterBits / Long.SIZE, longs -> new BloomFilter(longs, hasher));
+            if (!filter.isPresent(row)) {
+                throw new NoSuchElementException("no such element");
             }
-            throw new NoSuchElementException("could not find the row: " + row);
+            while (c.getFilePointer() < c.length()) {
+                String crow = c.readLine();
+                String cval = c.readLine();
+                long timestamp = c.readLong();
+                if (crow.equals(row)) {
+                    if (cval.length() == 0) {
+                        return Modification.remove(timestamp);
+                    } else {
+                        return Modification.put(new Timed<>(cval));
+                    }
+                }
+            }
+            throw new NoSuchElementException("no such element");
         } catch (IOException ioe) {
-            ioe.printStackTrace();
-            throw new NoSuchElementException("could not find the element due to IOException: " + ioe.getMessage());
+            throw new NoSuchElementException("could not find element due to IOException " + ioe.getMessage());
+        } finally {
+            ComponentFile.tryClose(c);
         }
     }
 
-    public Map<RowCol, Modification> extractModification() {
-        //TODO: read the map from file
-        return Collections.unmodifiableMap(null);
+    public Map<String, Modification> extractModification() throws IOException {
+        ComponentFile c = null;
+        try {
+            c = dataBlock.getComponentFile();
+            for (int i = 0; i < bloomFilterBits / Long.SIZE; i++) {
+                c.readLong();
+            }
+            Map<String, Modification> mods = new TreeMap<>();
+            while (c.getFilePointer() < c.length()) {
+                String crow = c.readLine();
+                String cval = c.readLine();
+                long timestamp = c.readLong();
+                if (cval.length() == 0) {
+                    mods.put(crow, Modification.remove(timestamp));
+                } else {
+                    mods.put(crow, Modification.put(new Timed<>(cval, timestamp)));
+                }
+            }
+
+            return Collections.unmodifiableMap(mods);
+        } finally {
+            ComponentFile.tryClose(c);
+        }
     }
 }
