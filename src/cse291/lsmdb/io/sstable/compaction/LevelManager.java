@@ -1,11 +1,15 @@
 package cse291.lsmdb.io.sstable.compaction;
 
+
+import cse291.lsmdb.io.sstable.SSTableConfig;
 import cse291.lsmdb.io.sstable.blocks.*;
 import cse291.lsmdb.utils.Modification;
-import cse291.lsmdb.utils.Pair;
+import cse291.lsmdb.utils.Modifications;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -15,20 +19,26 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class LevelManager {
     private final Descriptor desc;
     private final int level;
+    private final int levelBlocksLimit;
+    private final SSTableConfig config;
     private final String column;
     private ReentrantReadWriteLock lock;
     private AtomicBoolean shouldWait;
+    private ExecutorService threadPool;
 
-    public LevelManager(Descriptor desc, String column, int level) {
+    public LevelManager(Descriptor desc, String column, int level, SSTableConfig config) {
         this.desc = desc;
         this.level = level;
+        this.config = config;
+        this.levelBlocksLimit = config.getBlocksNumLimitForLevel().apply(level);
         this.column = column;
         this.lock = new ReentrantReadWriteLock(true);
         this.shouldWait = new AtomicBoolean(false);
+        this.threadPool = Executors.newCachedThreadPool();
     }
 
     private IndexBlock getIndexBlock() {
-        return new IndexBlock(desc, column, level);
+        return new IndexBlock(desc, column, level, config);
     }
 
     private IndexBlockLoader getIndexBlockLoader() {
@@ -43,7 +53,7 @@ public class LevelManager {
             lock.readLock().lock();
             int index = getIndexBlockLoader().lookup(row);
             if (index != -1) {
-                DataBlock dataBlock = new DataBlock(desc, column, level, index);
+                DataBlock dataBlock = new DataBlock(desc, column, level, index, config);
                 DataBlockLoader dataBlockLoader = new DataBlockLoader(dataBlock);
                 Modification mod = dataBlockLoader.get(row);
                 if (mod.isPut()) {
@@ -61,10 +71,10 @@ public class LevelManager {
     private DataBlock[] getDataBlocks() {
         try {
             lock.readLock().lock();
-            String[] filenames = desc.getDir().list((dir, name) -> DataBlock.isDataBlock(name));
+            String[] filenames = desc.getDir().list((dir, name) -> DataBlock.isDataBlock(name, config));
             DataBlock[] blocks = new DataBlock[filenames.length];
             for (int i = 0; i < filenames.length; i++) {
-                blocks[i] = DataBlock.fromFileName(desc, column, filenames[i]).get();
+                blocks[i] = DataBlock.fromFileName(desc, column, filenames[i], config).get();
             }
             Arrays.sort(blocks);
             return blocks;
@@ -89,39 +99,18 @@ public class LevelManager {
     }
 
     /**
-     * Method to split a Map of <String, Modification> to maps which will be merged into individual data blocks
-     * @param toCompact a Map of <String, Modification> to be split
-     * @return A Map of Maps to be merged into every data block in this level
-     * @throws IOException in case of IO Exception
+     * Compacts a block into this level. In case that the total size exceeds the limit,
+     * return the block needs to push down.
+     * Note that config should be used.
+     * @param block the block to compact in this level
+     * @return the block to compact to next level. null if not exis
+     * @throws IOException
      */
-    private Map<Integer, Map<String, Modification>> split_map(Map<String, Modification> toCompact) throws IOException {
-
-        // Create the list of Maps and fill with empty Maps
-        Map<Integer, Map<String, Modification>> split_maps = new HashMap<>();
-        IndexBlockLoader indexBlockLoader = this.getIndexBlockLoader();
-
-        ArrayList<Pair<String, String>> ranges = indexBlockLoader.getRanges(); // Get dataBlock ranges
-
-        // We put all entries has rowKey less than the maximum value of current range to corresponding dataBlock
-        // Unless it is already the last block
-        int currentRangeIndex = 0;
-        String end = ranges.get(currentRangeIndex).right;
-
-        for (Map.Entry<String, Modification> pair : toCompact.entrySet()) {
-            String rowName = pair.getKey();
-            Modification colValue = pair.getValue();
-            if(rowName.compareTo(end) > 0 && currentRangeIndex < ranges.size()-1){
-                currentRangeIndex += 1;
-                end = ranges.get(currentRangeIndex).right;
-            }
-            if(!split_maps.containsKey(currentRangeIndex)){
-                split_maps.put(currentRangeIndex, new TreeMap<>());
-            }
-            split_maps.get(currentRangeIndex).put(rowName,colValue);
-        }
-
-        return split_maps;
+    public Modifications compact(Modifications block) throws IOException {
+        int blockBytesLimit = config.getBlockBytesLimit();
+        return null;
     }
+
 
     public Descriptor getDesc() {
         return desc;

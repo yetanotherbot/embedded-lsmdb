@@ -4,13 +4,11 @@ import cse291.lsmdb.io.interfaces.Filter;
 import cse291.lsmdb.io.interfaces.StringHasher;
 import cse291.lsmdb.io.sstable.filters.BloomFilter;
 import cse291.lsmdb.utils.Modification;
+import cse291.lsmdb.utils.Modifications;
 import cse291.lsmdb.utils.Timed;
 
 import java.io.*;
-import java.util.Collections;
-import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.TreeMap;
 
 /**
  * Created by musteryu on 2017/6/4.
@@ -59,14 +57,14 @@ public class DataBlockLoader extends AbstractSSTableBlock {
         }
     }
 
-    public Map<String, Modification> extractModification() throws IOException {
+    public Modifications extractModifications(int limit) throws IOException {
         ComponentFile c = null;
         try {
             c = dataBlock.getReadableComponentFile();
             for (int i = 0; i < bloomFilterBits / Long.SIZE; i++) {
                 c.readLong();
             }
-            Map<String, Modification> mods = new TreeMap<>();
+            Modifications mods = new Modifications(limit);
             while (c.getFilePointer() < c.length()) {
                 String crow = c.readLine();
                 String cval = c.readLine();
@@ -78,7 +76,7 @@ public class DataBlockLoader extends AbstractSSTableBlock {
                 }
             }
 
-            return Collections.unmodifiableMap(mods);
+            return mods;
         } finally {
             ComponentFile.tryClose(c);
         }

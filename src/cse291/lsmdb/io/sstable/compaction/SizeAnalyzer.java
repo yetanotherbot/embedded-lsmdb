@@ -39,4 +39,8 @@ public class SizeAnalyzer {
         size += analyze(mods);
         return size;
     }
+
+    public int size() {
+        return this.size;
+    }
 }

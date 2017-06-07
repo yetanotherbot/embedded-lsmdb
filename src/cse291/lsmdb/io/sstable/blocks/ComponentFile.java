@@ -1,6 +1,5 @@
 package cse291.lsmdb.io.sstable.blocks;
 
-import cse291.lsmdb.io.interfaces.Extractor;
 import cse291.lsmdb.io.interfaces.Filter;
 
 import java.io.*;
@@ -38,8 +37,8 @@ public class ComponentFile extends RandomAccessFile {
      * @param filter the BloomFilter of the data
      * @throws IOException if an I/O error happens
      */
-    public void writeFilter(Filter filter, Function<Filter, long[]> toLongs) throws IOException{
-        long[] filterLongs = toLongs.apply(filter);
+    public void writeFilter(Filter filter) throws IOException{
+        long[] filterLongs = filter.toLongs();
         for (Long filterLong: filterLongs){
             writeLong(filterLong);
         }

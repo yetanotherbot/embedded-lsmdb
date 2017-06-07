@@ -3,8 +3,9 @@ package cse291.lsmdb.io.sstable;
 
 import cse291.lsmdb.io.sstable.blocks.Descriptor;
 import cse291.lsmdb.io.sstable.compaction.LevelManager;
-import cse291.lsmdb.utils.Modification;
+import cse291.lsmdb.utils.Modifications;
 
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -16,14 +17,14 @@ public class SSTable {
     private final LevelManager[] levelManagers;
     private final MemTable mt;
 
-    public SSTable(Descriptor desc, String column, int level) {
+    public SSTable(Descriptor desc, String column, SSTableConfig config) {
         this.desc = desc;
         this.column = column;
-        levelManagers = new LevelManager[level];
-        for (int i = 1; i < level; i++) {
-            levelManagers[i] = new LevelManager(desc, column, i);
+        levelManagers = new LevelManager[config.getOnDiskLevelsLimit()];
+        for (int i = 1; i < config.getOnDiskLevelsLimit(); i++) {
+            levelManagers[i] = new LevelManager(desc, column, i, config);
         }
-        mt = new MemTable(desc, column, MemTable.DEFAULT_BYTES_LIMIT);
+        mt = new MemTable(desc, column, config);
     }
 
     public Optional<String> get(String row) throws InterruptedException {
@@ -39,27 +40,21 @@ public class SSTable {
         return Optional.empty();
     }
 
-    public boolean put(String row, String val) {
+    public boolean put(String row, String val) throws IOException {
         if (val.length() == 0) return false;
         if (row.length() == 0) return false;
         try {
             mt.put(row, val);
         } catch (MemTable.MemTableFull full) {
-            Map<String, Modification> mods = mt.steal();
+            Modifications mods = mt.stealModifications();
             for (LevelManager levelManager: levelManagers) {
-                ArrayList<Map<String, Modification>> blicks = levelManager.compact(mods);
                 levelManager.freeze();
+                mods = levelManager.compact(mods);
                 levelManager.renameAndGC();
                 levelManager.unfreeze();
-                mods = join(blicks);
             }
             if (mods != null) throw new RuntimeException("out of storage");
         }
         return true;
-    }
-
-    private Map<String, Modification> join(Collection<Map<String, Modification>> mods) {
-        //TODO
-        return null;
     }
 }

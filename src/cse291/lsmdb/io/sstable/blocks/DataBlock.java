@@ -1,5 +1,7 @@
 package cse291.lsmdb.io.sstable.blocks;
 
+import cse291.lsmdb.io.sstable.SSTableConfig;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
@@ -12,7 +14,8 @@ public class DataBlock extends AbstractBlock implements Comparable<DataBlock> {
     private String column;
     private int level, index;
 
-    public DataBlock(Descriptor desc, String column, int level, int index) {
+    public DataBlock(Descriptor desc, String column, int level, int index, SSTableConfig config) {
+        super(config);
         this.desc = desc;
         this.level = level;
         this.index = index;
@@ -27,7 +30,7 @@ public class DataBlock extends AbstractBlock implements Comparable<DataBlock> {
         File dir = desc.getDir();
         File colDir = new File(dir, column);
         String filename = String.format(
-                "%d_%d_Data%s", level, index, DEFAULT_SUFFIX
+                "%d_%d_Data%s", level, index, config.getBlockFilenameSuffix()
         );
         return new File(colDir, filename);
     }
@@ -42,26 +45,26 @@ public class DataBlock extends AbstractBlock implements Comparable<DataBlock> {
         return Integer.compare(this.index, that.index);
     }
 
-    public static boolean isDataBlock(String filename) {
+    public static boolean isDataBlock(String filename, SSTableConfig config) {
         // <level>_<index>_Data.db
         String[] parts = filename.split("_");
         if (parts.length != 3) return false;
-        if (parts[2].endsWith("Data" + DEFAULT_SUFFIX)) {
+        if (parts[2].endsWith("Data" + config.getBlockFilenameSuffix())) {
             return false;
         }
         return true;
     }
 
-    public static Optional<DataBlock> fromFileName(Descriptor desc, String column, String filename) {
+    public static Optional<DataBlock> fromFileName(Descriptor desc, String column, String filename, SSTableConfig config) {
         String[] parts = filename.split("_");
         if (parts.length != 3) return Optional.empty();
-        if (parts[2].endsWith("Data" + DEFAULT_SUFFIX)) {
+        if (parts[2].endsWith("Data" + config.getBlockFilenameSuffix())) {
             return Optional.empty();
         }
         try {
             int level = Integer.parseInt(parts[0]);
             int index = Integer.parseInt(parts[1]);
-            return Optional.of(new DataBlock(desc, column, level, index));
+            return Optional.of(new DataBlock(desc, column, level, index, config));
         } catch (NumberFormatException nfe) {
             return Optional.empty();
         }

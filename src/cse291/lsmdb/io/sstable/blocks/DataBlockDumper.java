@@ -1,12 +1,10 @@
 package cse291.lsmdb.io.sstable.blocks;
 
 import cse291.lsmdb.io.interfaces.Filter;
-import cse291.lsmdb.io.sstable.filters.BloomFilter;
 import cse291.lsmdb.utils.Modification;
+import cse291.lsmdb.utils.Modifications;
 
 import java.io.*;
-import java.util.*;
-import java.util.function.Function;
 
 /**
  * Created by musteryu on 2017/6/4.
@@ -20,19 +18,21 @@ public class DataBlockDumper {
         this.filterBits = filterBits;
     }
 
-    public void dump(
-            Map<String, Modification> modifications,
-            BloomFilter filter,
-            Function<Filter, long[]> toLongs
-    ) throws IOException {
+    /**
+     * Dumps the modifications into the current temporary block. The number of longs in
+     * the filter should match the filterBits.
+     * @param modifications modifications to dump
+     * @param filter the bloom filter to dump in the file
+     * @throws IOException
+     */
+    public void dump(Modifications modifications, Filter filter) throws IOException {
         ComponentFile c = null;
         try {
             c = tmpDataBlock.getWritableComponentFile();
-            long[] longs = toLongs.apply(filter);
+            long[] longs = filter.toLongs();
             if (longs.length != filterBits) throw new IOException("filter length mismatch");
-            c.writeFilter(filter, toLongs);
-            SortedSet<String> rowset = new TreeSet<>(modifications.keySet());
-            for (String row: rowset) {
+            c.writeFilter(filter);
+            for (String row: modifications.rows()) {
                 c.writeChars(row + "\n");
                 Modification mod = modifications.get(row);
                 if (mod.isPut()) {

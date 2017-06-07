@@ -1,5 +1,7 @@
 package cse291.lsmdb.io.sstable.blocks;
 
+import cse291.lsmdb.io.sstable.SSTableConfig;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -31,7 +33,8 @@ public class IndexBlock extends AbstractBlock {
     private final int level;
     private final String column;
 
-    public IndexBlock(Descriptor desc, String column, int level) {
+    public IndexBlock(Descriptor desc, String column, int level, SSTableConfig config) {
+        super(config);
         this.desc = desc;
         this.level = level;
         this.column = column;
@@ -41,7 +44,7 @@ public class IndexBlock extends AbstractBlock {
     public File getFile() throws IOException {
         File colDir = new File(desc.getDir(), column);
         String filename = String.format(
-                "%d_Index%s", level, DEFAULT_SUFFIX
+                "%d_Index%s", level, config.getBlockFilenameSuffix()
         );
         return new File(colDir, filename);
     }

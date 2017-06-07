@@ -2,78 +2,53 @@ package cse291.lsmdb.io.sstable;
 
 import cse291.lsmdb.io.sstable.blocks.Descriptor;
 import cse291.lsmdb.utils.Modification;
+import cse291.lsmdb.utils.Modifications;
 import cse291.lsmdb.utils.Timed;
 
-import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.TreeMap;
 
 /**
  * Created by musteryu on 2017/6/1.
  */
 public class MemTable {
     private final Descriptor desc;
-    private Map<String, Modification> modifications;
+    private Modifications modifications;
     private final String column;
-    private int bytesLimit;
-    private int bytesNum;
-    public static final int DEFAULT_BYTES_LIMIT = 16 * 1024 * 1024; // 16 MB
+    private SSTableConfig config;
 
-    public MemTable(Descriptor desc, String column, int bytesLimit) {
+    public MemTable(Descriptor desc, String column, SSTableConfig config) {
         this.desc = desc;
-        this.modifications = new TreeMap<>();
-        this.bytesLimit = bytesLimit;
-        this.bytesNum = 0;
+        this.config = config;
+        this.modifications = new Modifications(config.getMemTableBytesLimit());
         this.column = column;
     }
 
-    public MemTable(Descriptor desc, String column) {
-        this(desc, column, DEFAULT_BYTES_LIMIT);
-    }
-
-    private boolean addModification(String row, Modification curr) throws MemTableFull {
-        try {
-            if (modifications.containsKey(row)) {
-                Modification last = modifications.get(row);
-                if (last.getTimestamp() > curr.getTimestamp()) return false;
-                if (last.isPut()) {
-                    bytesNum -= bytelen(last.getIfPresent().get());
-                }
-                if (curr.isPut()) {
-                    bytesNum += bytelen(curr.getIfPresent().get());
-                }
-            } else {
-                bytesNum += bytelen(curr.getIfPresent().get());
-                bytesNum += Long.BYTES;
-            }
-            return true;
-        } finally {
-            checkLimit();
-        }
-    }
-
-    public boolean put(String row, String val, long timestamp) throws MemTableFull {
+    public synchronized boolean put(String row, String val, long timestamp) throws MemTableFull {
         Modification mod = Modification.put(new Timed<>(val, timestamp));
-        return addModification(row, mod);
+        Modification inserted = modifications.put(row, mod);
+        if (modifications.existLimit()) {
+            throw new MemTableFull();
+        }
+        return inserted != null;
     }
 
-    public boolean put(String row, String val) throws MemTableFull {
-        return addModification(row, Modification.put(Timed.now(val)));
+    public synchronized boolean put(String row, String val) throws MemTableFull {
+        return put(row, val, System.currentTimeMillis());
     }
 
-    public boolean remove(String row, long timestamp) throws MemTableFull {
+    public synchronized boolean remove(String row, long timestamp) throws MemTableFull {
         Modification mod = Modification.remove(timestamp);
-        return addModification(row, mod);
+        Modification inserted = modifications.put(row, mod);
+        if (modifications.existLimit()) {
+            throw new MemTableFull();
+        }
+        return inserted != null;
     }
 
-    public boolean remove(String row) throws MemTableFull {
+    public synchronized boolean remove(String row) throws MemTableFull {
         return remove(row, System.currentTimeMillis());
     }
 
-
-    private int bytelen(String s) {
-        return s.getBytes().length;
-    }
 
     /**
      * Gets an element from the MemTable if it exists
@@ -85,7 +60,7 @@ public class MemTable {
                     "the element is not in memtable: (col: %s, row %s)",
                     column, row
             ));
-        } else if (modifications.get(row).isRemove()){
+        } else if (modifications.get(row).isRemove()) {
             // if no put happened or the put is stale
             throw new NoSuchElementException(String.format(
                     "the element is already deleted: %s/%s/(col %s, row %s)",
@@ -97,21 +72,29 @@ public class MemTable {
         throw new NoSuchElementException("no such element, reason unknown");
     }
 
-    private void checkLimit() throws MemTableFull {
-        if (bytesNum > bytesLimit) {
-            throw new MemTableFull();
-        }
+
+    private synchronized void cleanup() {
+        modifications = new Modifications(config.getMemTableBytesLimit());
     }
 
-    private void cleanup() {
-        modifications = new TreeMap<>();
-        bytesNum = 0;
-    }
-
-    public Map<String, Modification> steal() {
-        Map<String, Modification> mods = modifications;
+    /**
+     * Steal the modifications from the current MemTable
+     */
+    public Modifications stealModifications() {
+        Modifications mods = modifications;
         cleanup();
         return mods;
+    }
+
+    /**
+     * Steal the immutable modifications from the current MemTable
+     */
+    public Modifications stealImmutableModifications() {
+        return Modifications.immutableRef(stealModifications());
+    }
+
+    public Modifications getImmutableModifications() {
+        return Modifications.immutableRef(modifications);
     }
 
     public static class MemTableFull extends Exception {}
