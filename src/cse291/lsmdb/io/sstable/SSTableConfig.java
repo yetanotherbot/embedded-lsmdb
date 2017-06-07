@@ -17,68 +17,91 @@ public final class SSTableConfig {
     private String blockFilenameSuffix = ".db";
     private String tempBlockFilenameSuffix = ".db.tmp";
 
-    public String getTempBlockFilenameSuffix() {
-        return tempBlockFilenameSuffix;
-    }
-
-    public void setTempBlockFilenameSuffix(String tempBlockFilenameSuffix) {
-        this.tempBlockFilenameSuffix = tempBlockFilenameSuffix;
-    }
-
-
     public int getBlockBytesLimit() {
         return blockBytesLimit;
-    }
-
-    public void setBlockBytesLimit(int blockBytesLimit) {
-        this.blockBytesLimit = blockBytesLimit;
     }
 
     public int getMemTableBytesLimit() {
         return memTableBytesLimit;
     }
 
-    public void setMemTableBytesLimit(int memTableBytesLimit) {
-        this.memTableBytesLimit = memTableBytesLimit;
-    }
-
     public int getPerBlockBloomFilterBits() {
         return perBlockBloomFilterBits;
-    }
-
-    public void setPerBlockBloomFilterBits(int perBlockBloomFilterBits) {
-        this.perBlockBloomFilterBits = perBlockBloomFilterBits;
     }
 
     public int getOnDiskLevelsLimit() {
         return onDiskLevelsLimit;
     }
 
-    public void setOnDiskLevelsLimit(int onDiskLevelsLimit) {
-        this.onDiskLevelsLimit = onDiskLevelsLimit;
-    }
-
     public Function<Integer, Integer> getBlocksNumLimitForLevel() {
         return blocksNumLimitForLevel;
-    }
-
-    public void setBlocksNumLimitForLevel(Function<Integer, Integer> blocksNumLimitForLevel) {
-        this.blocksNumLimitForLevel = blocksNumLimitForLevel;
     }
 
     public StringHasher getHasher() {
         return hasher;
     }
 
-    public void setHasher(StringHasher hasher) {
-        this.hasher = hasher;
-    }
-
     public String getBlockFilenameSuffix() {
         return blockFilenameSuffix;
     }
 
-    public void setBlockFilenameSuffix(String blockFilenameSuffix) {
-        this.blockFilenameSuffix = blockFilenameSuffix;
+    public String getTempBlockFilenameSuffix() {
+        return tempBlockFilenameSuffix;
+    }
+
+    public static SSTableConfigBuilder builder() {
+        return new SSTableConfigBuilder();
+    }
+
+    private static class SSTableConfigBuilder {
+        private SSTableConfig config;
+        private SSTableConfigBuilder() {
+            config = new SSTableConfig();
+        }
+
+        public SSTableConfigBuilder setBlockBytesLimit(int blockBytesLimit) {
+            config.blockBytesLimit = blockBytesLimit;
+            return this;
+        }
+
+        public SSTableConfigBuilder setMemTableBytesLimit(int memTableBytesLimit) {
+            config.memTableBytesLimit = memTableBytesLimit;
+            return this;
+        }
+
+        public SSTableConfigBuilder setPerBlockBloomFilterBits(int perBlockBloomFilterBits) {
+            config.perBlockBloomFilterBits = perBlockBloomFilterBits;
+            return this;
+        }
+
+        public SSTableConfigBuilder setOnDiskLevelsLimit(int onDiskLevelsLimit) {
+            config.onDiskLevelsLimit = onDiskLevelsLimit;
+            return this;
+        }
+
+        public SSTableConfigBuilder setBlocksNumLimitForLevel(Function<Integer, Integer> blocksNumLimitForLevel) {
+            config.blocksNumLimitForLevel = blocksNumLimitForLevel;
+            return this;
+        }
+
+        public SSTableConfigBuilder setHasher(StringHasher hasher) {
+            config.hasher = hasher;
+            return this;
+        }
+
+        public SSTableConfigBuilder setBlockFilenameSuffix(String blockFilenameSuffix) {
+            config.blockFilenameSuffix = blockFilenameSuffix;
+            return this;
+        }
+
+        public SSTableConfigBuilder setTempBlockFilenameSuffix(String tempBlockFilenameSuffix) {
+            config.tempBlockFilenameSuffix = tempBlockFilenameSuffix;
+            return this;
+        }
+
+        public SSTableConfig build() {
+            return config;
+        }
+
     }
 }
