@@ -133,6 +133,7 @@ public class LevelManager {
     public void rename() throws IOException {
         try {
             lock.writeLock().lock();
+            //requires the compact() method to remove original data files that are compacted
             DataBlock[] dbs = getDataBlocks();
             TempDataBlock[] tbs = getTempDataBlocks();
             int di = 0, ti = 0;
