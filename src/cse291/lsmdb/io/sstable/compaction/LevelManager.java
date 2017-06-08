@@ -9,7 +9,6 @@ import cse291.lsmdb.io.sstable.filters.BloomFilter;
 import cse291.lsmdb.utils.Modification;
 import cse291.lsmdb.utils.Modifications;
 
-import javax.xml.crypto.Data;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -180,12 +179,14 @@ public class LevelManager {
         int filterBits = config.getPerBlockBloomFilterBits();
 
         // Locate the blocks involved in the compact
+        // TODO: should consider situation where there is no Index Block at all
         IndexBlockLoader indexBlockLoader = this.getIndexBlockLoader();
         int firstAffectedBlockIndex = indexBlockLoader.lookup(block.firstKey());
         int lastAffectedBlockIndex = indexBlockLoader.lookup(block.lastKey());
 
         // Merge blocks with the pushed block one by one
         DataBlock[] dataBlocks = this.getDataBlocks();
+        // TODO: should consider situation where there is no Data Block
         for(int i = firstAffectedBlockIndex; i < lastAffectedBlockIndex; i++){
 
             DataBlockLoader loader = new DataBlockLoader(dataBlocks[i]);
