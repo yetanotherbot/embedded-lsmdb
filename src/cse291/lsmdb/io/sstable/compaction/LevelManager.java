@@ -123,7 +123,7 @@ public class LevelManager {
      * 1_2_Data.db.tmp_1,       -> 1_3_Data.db
      * 1_2_Data.db.tmp_2,       -> 1_4_Data.db
      * 1_3_Data.db,             -> 1_5_Data.db
-     * 1_4_Data.db.tmp0,        -> 1_6_Data.db
+     * 1_4_Data.db.tmp_0,       -> 1_6_Data.db
      * 1_5_Data.db              -> 1_7_Data.db
      *
      * This method requires the compact() method to remove original data file as well as
@@ -145,10 +145,10 @@ public class LevelManager {
                 }
             }
             while (di < dbs.length) {
-                files.add(dbs[di].getFile());
+                files.add(dbs[di++].getFile());
             }
             while (ti < tbs.length) {
-                files.add(tbs[ti].getFile());
+                files.add(tbs[ti++].getFile());
             }
             for (int i = 0; i < files.size(); i++) {
                 File dst = new DataBlock(desc, column, level, i, config).getFile();
