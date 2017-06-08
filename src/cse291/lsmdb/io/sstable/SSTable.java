@@ -50,7 +50,7 @@ public class SSTable {
             for (LevelManager levelManager: levelManagers) {
                 levelManager.freeze();
                 mods = levelManager.compact(mods);
-                levelManager.renameAndGC();
+                levelManager.rename();
                 levelManager.unfreeze();
             }
             if (mods != null) throw new RuntimeException("out of storage");

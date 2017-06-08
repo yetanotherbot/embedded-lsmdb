@@ -25,6 +25,10 @@ public class DataBlock extends AbstractBlock implements Comparable<DataBlock> {
         this.column = column;
     }
 
+    public int getIndex() {
+        return index;
+    }
+
     @Override
     public File getFile() throws IOException {
         File dir = desc.getDir();
