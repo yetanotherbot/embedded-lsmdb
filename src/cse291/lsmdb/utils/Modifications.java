@@ -1,6 +1,7 @@
 package cse291.lsmdb.utils;
 
 
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -64,6 +65,28 @@ public class Modifications extends TreeMap<String, Modification> {
         for (String r: m1.rows()) m.put(r, m1.get(r));
         for (String r: m2.rows()) m.put(r, m2.get(r));
         return m;
+    }
+
+    /**
+     * Merge two Modifications together, and split them again with the first one full of entries
+     * @param m1 first Modifications
+     * @param m2 second Modifications
+     * @param limit the byte limit for each Modifications
+     * @return array of two Modifications
+     */
+
+    public static Modifications[] reSplit(Modifications m1, Modifications m2, int limit){
+        Modifications[] toReturn = {new Modifications(limit),new Modifications(limit)};
+        Modifications total = merge(m1,m2,Integer.MAX_VALUE);
+        for (Map.Entry<String, Modification> entry : total.entrySet())
+        {
+            if(!toReturn[0].existLimit()){
+                toReturn[0].put(entry.getKey(),entry.getValue());
+            } else {
+                toReturn[1].put(entry.getKey(),entry.getValue());
+            }
+        }
+        return toReturn;
     }
 
     /**

@@ -1,11 +1,15 @@
 package cse291.lsmdb.io.sstable.compaction;
 
 
+import cse291.lsmdb.io.interfaces.Filter;
+import cse291.lsmdb.io.sstable.MurMurHasher;
 import cse291.lsmdb.io.sstable.SSTableConfig;
 import cse291.lsmdb.io.sstable.blocks.*;
+import cse291.lsmdb.io.sstable.filters.BloomFilter;
 import cse291.lsmdb.utils.Modification;
 import cse291.lsmdb.utils.Modifications;
 
+import javax.xml.crypto.Data;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -171,8 +175,37 @@ public class LevelManager {
      * @throws IOException
      */
     public Modifications compact(Modifications block) throws IOException {
+        // Get configurations
         int blockBytesLimit = config.getBlockBytesLimit();
-        return null;
+        int filterBits = config.getPerBlockBloomFilterBits();
+
+        // Locate the blocks involved in the compact
+        IndexBlockLoader indexBlockLoader = this.getIndexBlockLoader();
+        int firstAffectedBlockIndex = indexBlockLoader.lookup(block.firstKey());
+        int lastAffectedBlockIndex = indexBlockLoader.lookup(block.lastKey());
+
+        // Merge blocks with the pushed block one by one
+        DataBlock[] dataBlocks = this.getDataBlocks();
+        for(int i = firstAffectedBlockIndex; i < lastAffectedBlockIndex; i++){
+
+            DataBlockLoader loader = new DataBlockLoader(dataBlocks[i]);
+            Modifications toDump = loader.extractModifications(blockBytesLimit);
+
+            // Resplit the Modifications into block size
+            Modifications[] mods = Modifications.reSplit(toDump,block,blockBytesLimit);
+            block = mods[1];
+            toDump = mods[0];
+
+            // Dump the TempDataBlock
+            TempDataBlock tmp = new TempDataBlock(this.desc,this.column,this.level,i-firstAffectedBlockIndex,i,this.config);
+            //TODO: Update Bloom Filter somehow
+            Filter filter = new BloomFilter(filterBits, new MurMurHasher());
+
+            DataBlockDumper dumper = new DataBlockDumper(tmp,filterBits);
+            dumper.dump(toDump,filter);
+        }
+        this.rename();
+        return block;
     }
 
 
