@@ -1,11 +1,13 @@
 package cse291.lsmdb.io;
 
 import cse291.lsmdb.io.sstable.MemTable;
+import cse291.lsmdb.io.sstable.SSTable;
 import cse291.lsmdb.io.sstable.SSTableConfig;
 import cse291.lsmdb.io.sstable.blocks.Descriptor;
 import cse291.lsmdb.utils.Modifications;
 import cse291.lsmdb.utils.Row;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,7 +17,7 @@ import java.util.Map;
  */
 public class Table {
     private String tableName;
-    private Map<String, MemTable> memTableMap;
+    private Map<String, SSTable> SSTableMap;
 
     /**
      * Constructor to create a table based on tableName and columnNames
@@ -24,26 +26,26 @@ public class Table {
      */
     public Table(String tableName, String[] columnNames){
         this.tableName = tableName;
-        this.memTableMap = new HashMap<>();
+        this.SSTableMap = new HashMap<>();
         // TODO: Set correct Descriptor & Config
         Descriptor desc = new Descriptor(tableName,"","",columnNames);
         SSTableConfig config = new SSTableConfig();
         for (String columnName: columnNames){
-            this.memTableMap.put(columnName,new MemTable(desc,columnName,config));
+            this.SSTableMap.put(columnName,new SSTable(desc,columnName,config));
         }
     }
 
     /**
      * Insert a row into the table
      * @param row the row to be added
-     * @throws MemTable.MemTableFull
+     * @throws IOException
      */
-    public void insert(Row row) throws MemTable.MemTableFull{
+    public void insert(Row row) throws IOException{
         // TODO: Add to the rowChache
-        for(String columnName : this.memTableMap.keySet()){
+        for(String columnName : this.SSTableMap.keySet()){
             if(row.hasColumn(columnName)) {
                 //TODO: Handle memTableFull, maybe just let memTable flush itself when full
-                this.memTableMap.get(columnName).put(row.getRowKey(), row.getColumnValue(columnName));
+                this.SSTableMap.get(columnName).put(row.getRowKey(), row.getColumnValue(columnName));
             }
         }
     }
@@ -53,10 +55,10 @@ public class Table {
      * @param rowKey the rowKey to search
      * @return the row with the rowKey or null if not exist
      */
-    public Row selectRowKey(String rowKey) throws MemTable.MemTableFull {
+    public Row selectRowKey(String rowKey) throws InterruptedException {
         Map<String,String> columnValues = new HashMap<>();
-        for(String columnName:this.memTableMap.keySet()){
-            columnValues.put(columnName,this.memTableMap.get(columnName).get(rowKey));
+        for(String columnName:this.SSTableMap.keySet()){
+            columnValues.put(columnName,this.SSTableMap.get(columnName).get(rowKey).orElse(null));
         }
         for(String columnValue:columnValues.values()){
             // As long as one column value is not null, we know this row is not deleted
@@ -94,9 +96,9 @@ public class Table {
      * Method to delete a row by rowKey
      * @param rowKey
      */
-    public void deleteRowKey(String rowKey) throws MemTable.MemTableFull{
-        for(MemTable memTable:this.memTableMap.values()){
-            memTable.remove(rowKey);
+    public void deleteRowKey(String rowKey) throws IOException{
+        for(SSTable table:this.SSTableMap.values()){
+            table.put(rowKey,null);
         }
     }
 
@@ -104,7 +106,7 @@ public class Table {
      * Method to insert a row
      * @param row
      */
-    public void update(Row row) throws MemTable.MemTableFull{
+    public void update(Row row) throws IOException{
         this.insert(row);
     }
 }
