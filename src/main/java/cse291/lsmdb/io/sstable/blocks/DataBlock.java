@@ -73,4 +73,11 @@ public class DataBlock extends AbstractBlock implements Comparable<DataBlock> {
             return Optional.empty();
         }
     }
+
+    public static String buildFilename(Descriptor desc, String column, int level, int index, SSTableConfig config) {
+        String filename = String.format(
+                "%d_%d_Data%s", level, index, config.getBlockFilenameSuffix()
+        );
+        return filename;
+    }
 }
