@@ -1,7 +1,6 @@
 package cse291.lsmdb.io.sstable.blocks;
 
 import cse291.lsmdb.io.sstable.SSTableConfig;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.IOException;
@@ -99,7 +98,10 @@ public class TempDataBlock extends AbstractBlock implements Comparable<TempDataB
     }
 
     @Override
-    public int compareTo(@NotNull TempDataBlock that) {
+    public int compareTo(TempDataBlock that) {
+        if (that == null) {
+            throw new IllegalArgumentException("the block compare to is null");
+        }
         if (this.level < that.level) return -1;
         if (this.level > that.level) return  1;
         if (this.originIndex < that.originIndex) return -1;
