@@ -42,6 +42,7 @@ public class Modifications extends TreeMap<String, Modification> {
             bytesNum += byteLen(curr.getIfPresent().get());
             bytesNum += Long.BYTES;
         }
+        super.put(row, curr);
         return curr;
     }
 
