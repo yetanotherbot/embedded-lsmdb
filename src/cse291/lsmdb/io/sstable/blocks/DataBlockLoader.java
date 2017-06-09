@@ -24,10 +24,6 @@ public class DataBlockLoader extends AbstractSSTableBlock {
         this.hasher = hasher;
     }
 
-    public DataBlockLoader(DataBlock block) {
-        this(block, DEFAULT_BLOOM_FILTER_BITS, DEFAULT_HASHER);
-    }
-
     @Override
     public Modification get(String row) throws NoSuchElementException {
         ComponentFile c = null;

@@ -12,6 +12,7 @@ public final class SSTableConfig {
     private int memTableBytesLimit = 1024 * 1024 * 16; // 16 MB;
     private int perBlockBloomFilterBits = 1024;
     private int onDiskLevelsLimit = 3;
+    private int memTablesLimit = 4;
     private Function<Integer, Integer> blocksNumLimitForLevel = l -> ((int) Math.pow(10, l));
     private StringHasher hasher = new MurMurHasher();
     private String blockFilenameSuffix = ".db";
@@ -33,6 +34,10 @@ public final class SSTableConfig {
 
     public int getOnDiskLevelsLimit() {
         return onDiskLevelsLimit;
+    }
+
+    public int getMemTablesLimit() {
+        return memTablesLimit;
     }
 
     public Function<Integer, Integer> getBlocksNumLimitForLevel() {
@@ -102,6 +107,11 @@ public final class SSTableConfig {
 
         public SSTableConfigBuilder setTempBlockFilenameSuffix(String tempBlockFilenameSuffix) {
             config.tempBlockFilenameSuffix = tempBlockFilenameSuffix;
+            return this;
+        }
+
+        public SSTableConfigBuilder setMemTablesLimit(int limit) {
+            config.memTablesLimit = limit;
             return this;
         }
 

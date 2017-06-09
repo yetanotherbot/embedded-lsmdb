@@ -48,4 +48,8 @@ public class IndexBlock extends AbstractBlock {
         );
         return new File(colDir, filename);
     }
+
+    public ComponentFile getWritableComponentFile() throws IOException {
+        return new ComponentFile(getFile(), "rw");
+    }
 }
