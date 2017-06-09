@@ -8,10 +8,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.util.HashSet;
-import java.util.NoSuchElementException;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by musteryu on 2017/6/9.
@@ -119,8 +116,9 @@ public class ModificationsTest {
     public void reassign() throws Exception {
 
         int bytesLimit = config.getBlockBytesLimit();
-        Modifications mod1 = new Modifications(bytesLimit/100);
-        Modifications mod2 = new Modifications(bytesLimit/100);
+        Modifications mod1 = new Modifications(bytesLimit);
+        Modifications mod2 = new Modifications(bytesLimit);
+
         for (int i = 0;!mod1.existLimit() && !mod2.existLimit(); i += 2){
 
             String row1 = String.format("test%d",i);
@@ -130,18 +128,23 @@ public class ModificationsTest {
             mod1.put(row1,Modification.put(Timed.now(value)));
             mod2.put(row2,Modification.put(Timed.now(value)));
         }
-        Queue<Modifications> reassignedMods = Modifications.reassign(mod1,mod2,bytesLimit/100);
+        
+        List<String> keys = new ArrayList<>();
+        keys.addAll(mod1.keySet());
+        keys.addAll(mod2.keySet());
+        Collections.sort(keys);
+
+        Queue<Modifications> reassignedMods = Modifications.reassign(mod1,mod2,bytesLimit);
 
         mod1 = reassignedMods.remove();
         mod2 = reassignedMods.remove();
 
-        //TODO: bug in code or test, seems mod2 contains the smaller keys
         for(int i = 0; i < mod1.size(); i++){
-            Assert.assertTrue(mod1.containsKey(String.format("test%d",i)));
+            Assert.assertTrue(mod1.containsKey(keys.get(i)));
         }
 
         for(int i = mod1.size(); i < mod1.size() + mod2.size(); i++){
-            Assert.assertTrue(mod2.containsKey(String.format("test%d",i)));
+            Assert.assertTrue(mod2.containsKey(keys.get(i)));
         }
     }
 
