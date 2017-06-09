@@ -41,10 +41,13 @@ public class SSTable {
     }
 
     public boolean put(String row, String val) throws IOException {
-        if (val.length() == 0) return false;
         if (row.length() == 0) return false;
         try {
-            mt.put(row, val);
+            if(val != null) {
+                mt.put(row, val);
+            } else {
+                mt.remove(row);
+            }
         } catch (MemTable.MemTableFull full) {
             Modifications mods = mt.stealModifications();
             for (LevelManager levelManager: levelManagers) {
