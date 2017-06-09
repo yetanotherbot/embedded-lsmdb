@@ -27,7 +27,7 @@ public class Table {
         this.memTableMap = new HashMap<>();
         // TODO: Set correct Descriptor & Config
         Descriptor desc = new Descriptor(tableName,"","",columnNames);
-        SSTableConfig config = new SSTableConfig();
+        SSTableConfig config = SSTableConfig.defaultConfig();
         for (String columnName: columnNames){
             this.memTableMap.put(columnName,new MemTable(desc,columnName,config));
         }

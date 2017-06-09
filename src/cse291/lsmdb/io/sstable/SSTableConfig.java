@@ -17,6 +17,8 @@ public final class SSTableConfig {
     private String blockFilenameSuffix = ".db";
     private String tempBlockFilenameSuffix = ".db.tmp";
 
+    private SSTableConfig() { }
+
     public int getBlockBytesLimit() {
         return blockBytesLimit;
     }
@@ -53,7 +55,11 @@ public final class SSTableConfig {
         return new SSTableConfigBuilder();
     }
 
-    private static class SSTableConfigBuilder {
+    public static SSTableConfig defaultConfig() {
+        return new SSTableConfig();
+    }
+
+    public static class SSTableConfigBuilder {
         private SSTableConfig config;
         private SSTableConfigBuilder() {
             config = new SSTableConfig();
