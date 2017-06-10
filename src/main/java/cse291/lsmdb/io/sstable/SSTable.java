@@ -4,7 +4,11 @@ package cse291.lsmdb.io.sstable;
 import cse291.lsmdb.io.sstable.blocks.Descriptor;
 import cse291.lsmdb.io.sstable.compaction.LevelManager;
 import cse291.lsmdb.utils.Modifications;
+import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang.math.RandomUtils;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.*;
 
@@ -64,16 +68,44 @@ public class SSTable {
             if (memTables.size() < memTablesLimit) {
                 return memTables.add(new MemTable(desc, column, config));
             }
-            Modifications mods = memTables.removeFirst().stealModifications();
-            for (LevelManager levelManager: levelManagers) {
+            Modifications mods = new Modifications(config.getBlockBytesLimit());
+            while (memTables.size() > config.getMemTablesFlushStrategy().apply(memTablesLimit)) {
+                mods.putAll(memTables.removeFirst().stealModifications());
+            }
+            for (int i = 1; i < levelManagers.length; i++) {
+                if (mods == null) break;
+                LevelManager levelManager = levelManagers[i];
+                System.out.printf("compact begin for level %d\n", i);
                 levelManager.freeze();
                 mods = levelManager.compact(mods);
                 levelManager.unfreeze();
+                System.out.printf("compact success for level %d\n\n", i);
             }
             if (mods != null) {
                 throw new RuntimeException("out of storage");
             }
         }
         return true;
+    }
+
+    public static void main(String[] args) {
+        SSTable sst = new SSTable(
+                new Descriptor("base", "ns", "cf", new String[]{"col"}),
+                "col",
+                SSTableConfig.defaultConfig()
+        );
+        try {
+            for (int i = 0; i < Integer.MAX_VALUE; i++) {
+                String row = "test" + RandomStringUtils.randomAlphabetic(50) + RandomUtils.nextInt(100) + RandomStringUtils.randomAlphabetic(2);
+                String val = "test" + RandomStringUtils.randomAlphabetic(50) + RandomUtils.nextInt(100) + RandomStringUtils.randomAlphabetic(2);
+                if (i % 2 == 0) {
+                    sst.put(row, val);
+                } else {
+                    sst.put(row, null);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

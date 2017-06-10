@@ -12,10 +12,12 @@ import cse291.lsmdb.utils.Pair;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.*;
-//import java.util.concurrent.ExecutorService;
-//import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
@@ -28,8 +30,8 @@ public class LevelManager {
     private final SSTableConfig config;
     private final String column;
     private ReentrantReadWriteLock lock;
-    private AtomicBoolean shouldWait;
-//    private ExecutorService threadPool;
+//    private AtomicBoolean shouldWait;
+    private ExecutorService threadPool;
     // TODO: 2017/6/9 parallelize compactions in the future
 
     public LevelManager(Descriptor desc, String column, int level, SSTableConfig config) {
@@ -39,8 +41,8 @@ public class LevelManager {
         this.levelBlocksLimit = config.getBlocksNumLimitForLevel().apply(level);
         this.column = column;
         this.lock = new ReentrantReadWriteLock(true);
-        this.shouldWait = new AtomicBoolean(false);
-//        this.threadPool = Executors.newCachedThreadPool();
+//        this.shouldWait = new AtomicBoolean(false);
+        this.threadPool = Executors.newCachedThreadPool();
     }
 
     private IndexBlock getIndexBlock() {
@@ -53,10 +55,10 @@ public class LevelManager {
 
     public Optional<String> get(String row) throws InterruptedException {
         try {
-            while (shouldWait.get()) {
-                wait();
-            }
-            lock.readLock().lock();
+//            while (shouldWait.get()) {
+//                wait();
+//            }
+//            lock.readLock().lock();
             int index = getIndexBlockLoader().lookup(row);
             if (index != -1) {
                 DataBlock dataBlock = new DataBlock(desc, column, level, index, config);
@@ -71,12 +73,17 @@ public class LevelManager {
         } catch (NoSuchElementException e) {
             return Optional.empty();
         } finally {
-            lock.readLock().unlock();
+//            lock.readLock().unlock();
         }
     }
 
+    private File getColumnDir() {
+        File dir = desc.getDir();
+        return new File(dir, column);
+    }
+
     private DataBlock[] getDataBlocks() {
-        String[] filenames = desc.getDir().list((dir, name) -> DataBlock.isDataBlock(name, config));
+        String[] filenames = getColumnDir().list((dir, name) -> DataBlock.isDataBlockForLevel(name, config, level));
         DataBlock[] blocks = new DataBlock[filenames.length];
         for (int i = 0; i < filenames.length; i++) {
             blocks[i] = DataBlock.fromFileName(desc, column, filenames[i], config).get();
@@ -86,7 +93,7 @@ public class LevelManager {
     }
 
     private TempDataBlock[] getTempDataBlocks() {
-        String[] filenames = desc.getDir().list(
+        String[] filenames = getColumnDir().list(
                 (dir, name) -> TempDataBlock.isTempDataBlock(name, config)
         );
         if (filenames == null) {
@@ -102,13 +109,13 @@ public class LevelManager {
     }
 
     public void freeze() {
-        shouldWait.set(true);
+//        shouldWait.set(true);
         lock.writeLock().lock();
     }
 
     public void unfreeze() {
-        shouldWait.set(false);
-        notifyAll();
+//        shouldWait.set(false);
+//        notifyAll();
         lock.writeLock().unlock();
     }
 
@@ -141,23 +148,20 @@ public class LevelManager {
      */
     private Modifications collect() throws IOException {
         Modifications forNext = null;
-        try {
-            lock.writeLock().lock();
-            //requires the compact() method to remove original data files that are compacted
-            ArrayList<File> files = mergeTempAndDataBlocks();
-            for (int i = 0; i < files.size(); i++) {
-                renameAsDataBlock(files.get(i), i);
-            }
-            if (files.size() > levelBlocksLimit) {
-                truncateIndexUpTo(levelBlocksLimit);
-                forNext = new Modifications(config.getBlockBytesLimit());
-                for (int start = levelBlocksLimit; start < files.size(); start++) {
-                     forNext.putAll(load(new DataBlock(desc, column, level, start, config)));
-                }
-            }
-        } finally {
-            lock.writeLock().unlock();
+
+        //requires the compact() method to remove original data files that are compacted
+        ArrayList<File> files = mergeTempAndDataBlocks();
+        for (int i = files.size() - 1; i >= 0; i--) { // must from higher index to lower
+            relinkAsDataBlock(files.get(i), i);
         }
+        if (files.size() > levelBlocksLimit) {
+            truncateIndexUpTo(levelBlocksLimit);
+            forNext = new Modifications(config.getBlockBytesLimit());
+            for (int start = levelBlocksLimit; start < files.size(); start++) {
+                forNext.putAll(load(new DataBlock(desc, column, level, start, config)));
+            }
+        }
+
         return forNext; //TODO: return blocks to next level
     }
 
@@ -193,13 +197,20 @@ public class LevelManager {
         while (ti < tbs.length) {
             files.add(tbs[ti++].getFile());
         }
+        System.out.println("to merge:");
+        for (File f: files) {
+            System.out.println(f.getName());
+        }
+        System.out.println("--------------");
         return files;
     }
 
-    private void renameAsDataBlock(File file, int index) throws IOException {
+    private void relinkAsDataBlock(File file, int index) throws IOException {
         File dst = new DataBlock(desc, column, level, index, config).getFile();
-        if (!file.renameTo(dst))
-            throw new IOException("failed to collect file");
+        if (file.getName().equals(dst.getName())) return;
+        System.out.printf("link %s to %s\n", dst.getName(), file.getName());
+        Files.createLink(dst.toPath(), file.toPath());
+        Files.delete(file.toPath());
     }
 
     /**
@@ -245,6 +256,7 @@ public class LevelManager {
         int i = ranges.size() - 1;
         while (i > 0) {
             if (ranges.get(i).left.compareTo(row) > 0) --i;
+            else break;
         }
         return i;
     }
@@ -278,6 +290,7 @@ public class LevelManager {
         int j = 0;
         ArrayList<Pair<String, String>> ranges = getRanges();
         ArrayList<Pair<String, String>> newRanges = new ArrayList<>(ranges.subList(0, fst));
+
         for (int i = fst; i <= snd; ++i) {
             Modifications mod = load(dbs[i]);
             Queue<Modifications> mods = Modifications.reassign(mod, block, config.getBlockBytesLimit());
@@ -285,22 +298,24 @@ public class LevelManager {
                 System.err.println("reassign result is empty, which should not happen");
                 continue;
             }
+
             while (mods.size() > 1) {
-                Modifications m = mods.poll();
+                final Modifications m = mods.poll();
                 newRanges.add(new Pair<>(m.firstKey(), m.lastKey()));
-                dumpTemp(m, j++, i);
+                dumpTemp(m, j, i);
+                j++;
             }
+
             block = mods.poll();
-            if (!dbs[i].getFile().delete()) {
-                System.err.printf("failed to delete file %s", dbs[i].getFile().getName());
-            }
+            Files.delete(dbs[i].getFile().toPath());
         }
         if (block.size() != 0) {
             dumpTemp(block, j, snd);
             newRanges.add(new Pair<>(block.firstKey(), block.lastKey()));
         }
         newRanges.addAll(ranges.subList(snd + 1, ranges.size()));
-        dumpIndex(ranges);
+        dumpIndex(newRanges);
+
     }
 
     /**

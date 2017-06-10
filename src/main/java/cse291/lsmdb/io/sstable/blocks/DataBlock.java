@@ -53,15 +53,24 @@ public class DataBlock extends AbstractBlock implements Comparable<DataBlock> {
     public static boolean isDataBlock(String filename, SSTableConfig config) {
         // <level>_<index>_Data.db
         String[] parts = filename.split("_");
-        for (String p : parts) {
-            System.out.printf(p + " ");
-        }
         if (parts.length != 3) return false;
         if (!parts[2].endsWith("Data" + config.getBlockFilenameSuffix())) {
             return false;
         }
         return true;
     }
+
+    public static boolean isDataBlockForLevel(String filename, SSTableConfig config, int level) {
+        // <level>_<index>_Data.db
+        String[] parts = filename.split("_");
+        if (parts.length != 3) return false;
+        if (Integer.parseInt(parts[0]) != level) return false;
+        if (!parts[2].endsWith("Data" + config.getBlockFilenameSuffix())) {
+            return false;
+        }
+        return true;
+    }
+
 
     public static Optional<DataBlock> fromFileName(Descriptor desc, String column, String filename, SSTableConfig config) {
         String[] parts = filename.split("_");

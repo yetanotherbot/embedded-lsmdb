@@ -28,7 +28,7 @@ public class Descriptor {
     public File getDir() {
         File dir = new File(new File(base, ns), cf);
         if (!dir.exists()) {
-            dir.mkdir();
+            dir.mkdirs();
         }
         return dir;
     }

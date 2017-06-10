@@ -46,6 +46,7 @@ public class IndexBlock extends AbstractBlock {
         String filename = String.format(
                 "%d_Index%s", level, config.getBlockFilenameSuffix()
         );
+
         return new File(colDir, filename);
     }
 

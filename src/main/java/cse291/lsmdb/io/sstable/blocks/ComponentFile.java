@@ -20,9 +20,10 @@ public class ComponentFile extends RandomAccessFile {
 
     public boolean tryClose() {
         try {
-            close();
+            this.close();
             return true;
         } catch (IOException e) {
+            e.printStackTrace();
             return false;
         }
     }

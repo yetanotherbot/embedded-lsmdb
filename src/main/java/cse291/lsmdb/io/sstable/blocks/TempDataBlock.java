@@ -50,8 +50,7 @@ public class TempDataBlock extends AbstractBlock implements Comparable<TempDataB
     }
 
     public ComponentFile getWritableComponentFile() throws IOException {
-        if (!getFile().exists())
-            getFile().createNewFile();
+        requireFileExists();
         if (!getFile().canWrite())
             getFile().setWritable(true);
         return new ComponentFile(getFile(), "rw");
@@ -82,9 +81,9 @@ public class TempDataBlock extends AbstractBlock implements Comparable<TempDataB
     ) {
         String[] parts = filename.split("_");
         // <level>_<originIndex>_Data.db.tmp_<index>
-        for (String p: parts) {
-            System.out.print(p + " ");
-        }
+//        for (String p: parts) {
+//            System.out.print(p + " ");
+//        }
         if (parts.length != 4) return Optional.empty();
         if (!parts[2].equals("Data" + config.getTempBlockFilenameSuffix())) {
             return Optional.empty();

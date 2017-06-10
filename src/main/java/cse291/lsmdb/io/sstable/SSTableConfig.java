@@ -9,13 +9,23 @@ import java.util.function.Function;
  */
 public final class SSTableConfig {
     private int blockBytesLimit = 1024 * 1024 * 16; // 16 MB
+
     private int memTableBytesLimit = 1024 * 1024 * 16; // 16 MB;
+
     private int perBlockBloomFilterBits = 1024;
+
     private int onDiskLevelsLimit = 3;
+
+    private Function<Integer, Integer> memTablesFlushStrategy = n -> n - 1;
+
     private int memTablesLimit = 4;
+
     private Function<Integer, Integer> blocksNumLimitForLevel = l -> ((int) Math.pow(10, l));
+
     private StringHasher hasher = new MurMurHasher();
+
     private String blockFilenameSuffix = ".db";
+
     private String tempBlockFilenameSuffix = ".db.tmp";
 
     private SSTableConfig() { }
@@ -38,6 +48,10 @@ public final class SSTableConfig {
 
     public int getMemTablesLimit() {
         return memTablesLimit;
+    }
+
+    public Function<Integer, Integer> getMemTablesFlushStrategy() {
+        return memTablesFlushStrategy;
     }
 
     public Function<Integer, Integer> getBlocksNumLimitForLevel() {
@@ -112,6 +126,11 @@ public final class SSTableConfig {
 
         public SSTableConfigBuilder setMemTablesLimit(int limit) {
             config.memTablesLimit = limit;
+            return this;
+        }
+
+        public SSTableConfigBuilder setMemTablesFlushStrategy(Function<Integer, Integer> f) {
+            config.memTablesFlushStrategy = f;
             return this;
         }
 
