@@ -4,11 +4,9 @@ package cse291.lsmdb.io.sstable;
 import cse291.lsmdb.io.sstable.blocks.Descriptor;
 import cse291.lsmdb.io.sstable.compaction.LevelManager;
 import cse291.lsmdb.utils.Modifications;
-import org.apache.commons.lang.RandomStringUtils;
-import org.apache.commons.lang.math.RandomUtils;
+import cse291.lsmdb.utils.Qualifier;
+import cse291.lsmdb.utils.Timed;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.*;
 
@@ -56,6 +54,52 @@ public class SSTable {
         return Optional.empty();
     }
 
+    /**
+     * Go through all the MemTables and Levels of datablocks to find entries meet the qualifier
+     * @param q
+     * @return Map of rowKey and columnValue
+     */
+    public Map<String,String> getColumnWithQualifier(Qualifier q) throws IOException{
+        Map<String,Timed<String>> result = new HashMap<>();
+        for(int i =  0; i < config.getOnDiskLevelsLimit(); i++){
+            result = this.mergeEntryMaps(result, this.levelManagers[i].getColumnWithQualifier(q));
+        }
+        for(int i = 0; i < config.getMemTablesLimit(); i++){
+            result = this.mergeEntryMaps(result, this.memTables.get(i).getColumnWithQualifier(q));
+        }
+
+        Map<String,String> toReturn = new HashMap<>();
+        for (Map.Entry<String, Timed<String>> entry : result.entrySet())
+        {
+            String value = entry.getValue().get();
+            if(value.length() > 0){
+                toReturn.put(entry.getKey(),value);
+            }
+        }
+        return toReturn;
+    }
+
+    private Map<String,Timed<String>> mergeEntryMaps(Map<String,Timed<String>> m1, Map<String,Timed<String>> m2){
+        Map<String,Timed<String>> mergedMap = new HashMap<>();
+        for (Map.Entry<String, Timed<String>> entry : m1.entrySet())
+        {
+            String rowKey = entry.getKey();
+            Timed<String> timedValue = entry.getValue();
+            if(!mergedMap.containsKey(rowKey) || mergedMap.get(rowKey).getTimestamp() < timedValue.getTimestamp()) {
+                mergedMap.put(entry.getKey(), entry.getValue());
+            }
+        }
+        for (Map.Entry<String, Timed<String>> entry : m2.entrySet())
+        {
+            String rowKey = entry.getKey();
+            Timed<String> timedValue = entry.getValue();
+            if(!mergedMap.containsKey(rowKey) || mergedMap.get(rowKey).getTimestamp() < timedValue.getTimestamp()) {
+                mergedMap.put(entry.getKey(), entry.getValue());
+            }
+        }
+        return mergedMap;
+    }
+
     public synchronized boolean put(String row, String val) throws IOException {
         if (row.length() == 0) return false;
         try {
@@ -86,26 +130,5 @@ public class SSTable {
             }
         }
         return true;
-    }
-
-    public static void main(String[] args) {
-        SSTable sst = new SSTable(
-                new Descriptor("base", "ns", "cf", new String[]{"col"}),
-                "col",
-                SSTableConfig.defaultConfig()
-        );
-        try {
-            for (int i = 0; i < Integer.MAX_VALUE; i++) {
-                String row = "test" + RandomStringUtils.randomAlphabetic(50) + RandomUtils.nextInt(100) + RandomStringUtils.randomAlphabetic(2);
-                String val = "test" + RandomStringUtils.randomAlphabetic(50) + RandomUtils.nextInt(100) + RandomStringUtils.randomAlphabetic(2);
-                if (i % 2 == 0) {
-                    sst.put(row, val);
-                } else {
-                    sst.put(row, null);
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }

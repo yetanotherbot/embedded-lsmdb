@@ -4,10 +4,10 @@ import cse291.lsmdb.io.sstable.MemTable;
 import cse291.lsmdb.io.sstable.SSTable;
 import cse291.lsmdb.io.sstable.SSTableConfig;
 import cse291.lsmdb.io.sstable.blocks.Descriptor;
-import cse291.lsmdb.utils.Modifications;
-import cse291.lsmdb.utils.Row;
+import cse291.lsmdb.utils.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -75,9 +75,43 @@ public class Table {
      * @param columnValue
      * @return List of qualified Rows
      */
-    public List<Row> selectColumnValue(String columnName, String columnValue){
-        //TODO
-        return null;
+    public List<Row> selectColumnValue(String columnName, String columnValue) throws IOException{
+        Map<String, Map<String,String>> columnResults = new HashMap<>();
+        Qualifier q = new Qualifier("=",columnValue);
+
+        // Request result in each column
+        for(String colName:this.SSTableMap.keySet()){
+            if(colName.equals(columnName)){
+                columnResults.put(colName,this.SSTableMap.get(colName).getColumnWithQualifier(q));
+            } else {
+                columnResults.put(colName,this.SSTableMap.get(colName).getColumnWithQualifier(new Qualifier())); // Grab Everything
+            }
+        }
+
+        // Compile columns into row information
+        Map<String, Map<String,String>> resultMap = new HashMap<>();
+        for (Map.Entry<String, Map<String,String>> entry : columnResults.entrySet())
+        {
+            String colName = entry.getKey();
+            for (Map.Entry<String, String> col : entry.getValue().entrySet())
+            {
+                String rowKey = col.getKey();
+                if(!resultMap.containsKey(rowKey)){
+                    resultMap.put(rowKey,new HashMap<>());
+                }
+                resultMap.get(rowKey).put(colName,col.getValue());
+            }
+        }
+
+        // Choose those qualify the specific column
+        List<Row> result = new ArrayList<>();
+        for (Map.Entry<String, Map<String,String>> entry : columnResults.entrySet())
+        {
+            if(entry.getValue().containsKey(columnName)){
+                result.add(new Row(entry.getKey(),entry.getValue()));
+            }
+        }
+        return result;
     }
 
     /**

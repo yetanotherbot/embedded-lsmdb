@@ -3,8 +3,11 @@ package cse291.lsmdb.io.sstable;
 import cse291.lsmdb.io.sstable.blocks.Descriptor;
 import cse291.lsmdb.utils.Modification;
 import cse291.lsmdb.utils.Modifications;
+import cse291.lsmdb.utils.Qualifier;
 import cse291.lsmdb.utils.Timed;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 /**
@@ -43,6 +46,20 @@ public class MemTable {
             throw new MemTableFull();
         }
         return inserted != null;
+    }
+
+    public synchronized Map<String,Timed<String>> getColumnWithQualifier(Qualifier q){
+        Map<String,Timed<String>> column = new HashMap<>();
+        for (Map.Entry<String, Modification> entry : modifications.entrySet())
+        {
+            String rowKey = entry.getKey();
+            Modification mod = entry.getValue();
+            Timed<String> timedValue = mod.getIfPresent();
+            if(mod.isPut() && q.qualify(timedValue.get())){
+                column.put(rowKey,timedValue);
+            }
+        }
+        return column;
     }
 
     public synchronized boolean remove(String row) throws MemTableFull {

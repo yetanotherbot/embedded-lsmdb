@@ -3,12 +3,11 @@ package cse291.lsmdb.io.sstable.compaction;
 
 import cse291.lsmdb.io.interfaces.Filter;
 import cse291.lsmdb.io.interfaces.WritableFilter;
+import cse291.lsmdb.io.sstable.MurMurHasher;
 import cse291.lsmdb.io.sstable.SSTableConfig;
 import cse291.lsmdb.io.sstable.blocks.*;
 import cse291.lsmdb.io.sstable.filters.BloomFilter;
-import cse291.lsmdb.utils.Modification;
-import cse291.lsmdb.utils.Modifications;
-import cse291.lsmdb.utils.Pair;
+import cse291.lsmdb.utils.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -77,9 +76,14 @@ public class LevelManager {
         }
     }
 
-    private File getColumnDir() {
-        File dir = desc.getDir();
-        return new File(dir, column);
+    public Map<String,Timed<String>> getColumnWithQualifier(Qualifier q) throws IOException{
+        Map<String,Timed<String>> columns = new HashMap<>();
+        DataBlock[] dataBlocks = this.getDataBlocks();
+        for (DataBlock db : dataBlocks){
+            DataBlockLoader dbLoader = new DataBlockLoader(db,0xFFFFFFFF,new MurMurHasher()); //Useless basically
+            columns.putAll(dbLoader.getColumnWithQualifier(q));
+        }
+        return columns;
     }
 
     private DataBlock[] getDataBlocks() {
