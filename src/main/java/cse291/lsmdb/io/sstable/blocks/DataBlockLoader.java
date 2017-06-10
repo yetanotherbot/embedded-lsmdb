@@ -5,9 +5,12 @@ import cse291.lsmdb.io.interfaces.StringHasher;
 import cse291.lsmdb.io.sstable.filters.BloomFilter;
 import cse291.lsmdb.utils.Modification;
 import cse291.lsmdb.utils.Modifications;
+import cse291.lsmdb.utils.Qualifier;
 import cse291.lsmdb.utils.Timed;
 
 import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
 /**
@@ -51,6 +54,23 @@ public class DataBlockLoader extends AbstractSSTableBlock {
         } finally {
             ComponentFile.tryClose(c);
         }
+    }
+
+    public Map<String,Timed<String>> getColumnWithQualifier(Qualifier q) throws IOException{
+        Map<String,Timed<String>> column = new HashMap<>();
+        Modifications mods = this.extractModifications(Integer.MAX_VALUE);
+        for (Map.Entry<String, Modification> entry : mods.entrySet())
+        {
+            String rowKey = entry.getKey();
+            Modification mod = entry.getValue();
+            if(!mod.isRemove()){
+                Timed<String> timedValue = mod.getIfPresent();
+                if(q.qualify(timedValue.get())) {
+                    column.put(rowKey, mod.getIfPresent());
+                }
+            }
+        }
+        return column;
     }
 
     public Modifications extractModifications(int limit) throws IOException {
