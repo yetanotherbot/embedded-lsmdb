@@ -33,9 +33,10 @@ public class DataBlock extends AbstractBlock implements Comparable<DataBlock> {
     public File getFile() throws IOException {
         File dir = desc.getDir();
         File colDir = new File(dir, column);
-        String filename = String.format(
-                "%d_%d_Data%s", level, index, config.getBlockFilenameSuffix()
-        );
+        if (!colDir.exists()) {
+            colDir.mkdirs();
+        }
+        String filename = buildFilename(desc, column, level, index, config);
         return new File(colDir, filename);
     }
 
@@ -52,8 +53,11 @@ public class DataBlock extends AbstractBlock implements Comparable<DataBlock> {
     public static boolean isDataBlock(String filename, SSTableConfig config) {
         // <level>_<index>_Data.db
         String[] parts = filename.split("_");
+        for (String p : parts) {
+            System.out.printf(p + " ");
+        }
         if (parts.length != 3) return false;
-        if (parts[2].endsWith("Data" + config.getBlockFilenameSuffix())) {
+        if (!parts[2].endsWith("Data" + config.getBlockFilenameSuffix())) {
             return false;
         }
         return true;
@@ -62,7 +66,7 @@ public class DataBlock extends AbstractBlock implements Comparable<DataBlock> {
     public static Optional<DataBlock> fromFileName(Descriptor desc, String column, String filename, SSTableConfig config) {
         String[] parts = filename.split("_");
         if (parts.length != 3) return Optional.empty();
-        if (parts[2].endsWith("Data" + config.getBlockFilenameSuffix())) {
+        if (!parts[2].endsWith("Data" + config.getBlockFilenameSuffix())) {
             return Optional.empty();
         }
         try {

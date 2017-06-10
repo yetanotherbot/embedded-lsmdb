@@ -16,12 +16,13 @@ public class IndexBlockDumper {
     }
 
     public void dump(List<Pair<String, String>> ranges) throws IOException {
+        idx.requireFileExists();
         ComponentFile c = null;
         try {
             c = idx.getWritableComponentFile();
             for (Pair<String, String> range: ranges) {
-                c.writeChars(range.left + "\n");
-                c.writeChars(range.right + "\n");
+                c.writeUTF(range.left);
+                c.writeUTF(range.right);
             }
         } finally {
             ComponentFile.tryClose(c);

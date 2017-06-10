@@ -1,6 +1,8 @@
 package cse291.lsmdb.utils;
 
 
+import java.util.Objects;
+
 /**
  * Created by musteryu on 2017/6/1.
  */
@@ -27,5 +29,14 @@ public class Timed<T> {
 
     public static <T> Timed<T> now(T t) {
         return new Timed<T>(t);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o != null && o instanceof Timed) {
+            final Timed<T> that = (Timed<T>) o;
+            return Objects.equals(this.val, that.val) && this.timestamp == that.timestamp;
+        }
+        return false;
     }
 }

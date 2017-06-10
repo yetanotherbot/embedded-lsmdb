@@ -35,4 +35,12 @@ public class TimedTest {
         }
     }
 
+    @Test
+    public void equalTest() {
+        Timed<String> t1 = Timed.now("abc");
+        Timed<String> t2 = Timed.now("abc");
+        assertEquals(t1, t2);
+        assertEquals(t1.getTimestamp(), t2.getTimestamp());
+    }
+
 }

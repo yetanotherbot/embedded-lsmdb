@@ -34,14 +34,14 @@ public class DataBlockLoader extends AbstractSSTableBlock {
                 throw new NoSuchElementException("no such element");
             }
             while (c.getFilePointer() < c.length()) {
-                String crow = c.readLine();
-                String cval = c.readLine();
+                String crow = c.readUTF();
+                String cval = c.readUTF();
                 long timestamp = c.readLong();
                 if (crow.equals(row)) {
                     if (cval.length() == 0) {
                         return Modification.remove(timestamp);
                     } else {
-                        return Modification.put(new Timed<>(cval));
+                        return Modification.put(new Timed<>(cval, timestamp));
                     }
                 }
             }
@@ -62,8 +62,8 @@ public class DataBlockLoader extends AbstractSSTableBlock {
             }
             Modifications mods = new Modifications(limit);
             while (c.getFilePointer() < c.length()) {
-                String crow = c.readLine();
-                String cval = c.readLine();
+                String crow = c.readUTF();
+                String cval = c.readUTF();
                 long timestamp = c.readLong();
                 if (cval.length() == 0) {
                     mods.put(crow, Modification.remove(timestamp));

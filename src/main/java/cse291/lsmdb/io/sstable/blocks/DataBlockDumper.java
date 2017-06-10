@@ -26,19 +26,21 @@ public class DataBlockDumper {
      * @throws IOException
      */
     public void dump(Modifications modifications, Filter filter) throws IOException {
+        tmpDataBlock.requireFileExists();
         ComponentFile c = null;
         try {
             c = tmpDataBlock.getWritableComponentFile();
             long[] longs = filter.toLongs();
-            if (longs.length != filterBits) throw new IOException("filter length mismatch");
+            if (longs.length * Long.SIZE != filterBits) throw new IOException("filter length mismatch");
             c.writeFilter(filter);
             for (String row: modifications.rows()) {
-                c.writeChars(row + "\n");
+//                System.out.println(row);
+                c.writeUTF(row);
                 Modification mod = modifications.get(row);
                 if (mod.isPut()) {
-                    c.writeChars(mod.getIfPresent().get() + "\n");
+                    c.writeUTF(mod.getIfPresent().get());
                 } else {
-                    c.writeChar('\n');
+                    c.writeUTF("");
                 }
                 c.writeLong(mod.getTimestamp());
             }

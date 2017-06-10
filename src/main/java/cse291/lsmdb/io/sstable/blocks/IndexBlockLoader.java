@@ -46,8 +46,8 @@ public class IndexBlockLoader {
         ComponentFile c = indexBlock.getReadableComponentFile();
         ArrayList<Pair<String, String>> ranges = new ArrayList<>();
         while (c.getFilePointer() < c.length()) {
-            String r1 = c.readLine();
-            String r2 = c.readLine();
+            String r1 = c.readUTF();
+            String r2 = c.readUTF();
             if (r1 != null && r2 != null)
                 ranges.add(new Pair<>(r1, r2));
         }

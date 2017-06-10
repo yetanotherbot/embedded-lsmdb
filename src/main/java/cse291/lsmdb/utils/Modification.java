@@ -1,5 +1,7 @@
 package cse291.lsmdb.utils;
 
+import java.util.Objects;
+
 /**
  * Created by musteryu on 2017/6/3.
  */
@@ -65,6 +67,17 @@ public final class Modification {
         if (a.isNothing()) return b;
         if (b.isNothing()) return a;
         return a.getTimestamp() < b.getTimestamp() ? b : a;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o != null && o instanceof Modification) {
+            final Modification that = (Modification) o;
+            return this.isPut == that.isPut &&
+                    this.isNothing == that.isNothing &&
+                    this.val.equals(that.val);
+        }
+        return true;
     }
 
 }

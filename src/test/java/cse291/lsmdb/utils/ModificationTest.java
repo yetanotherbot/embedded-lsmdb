@@ -1,5 +1,6 @@
 package cse291.lsmdb.utils;
 
+import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.math.RandomUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -75,4 +76,21 @@ public class ModificationTest {
         assertEquals(Modification.select(m1, m2).getTimestamp(), Math.max(l1, l2));
     }
 
+    @Test
+    public void equalTest() {
+        for (int i = 0; i < 1000; i++) {
+            String r = RandomStringUtils.randomAlphanumeric(100);
+            if (i % 2 == 0) {
+                Timed<String> t = Timed.now(r);
+                Modification p1 = Modification.put(t);
+                Modification p2 = Modification.put(t);
+                assertTrue(p1.equals(p2));
+            } else {
+                long now = System.currentTimeMillis();
+                Modification p1 = Modification.remove(now);
+                Modification p2 = Modification.remove(now);
+                assertTrue(p1.equals(p2));
+            }
+        }
+    }
 }

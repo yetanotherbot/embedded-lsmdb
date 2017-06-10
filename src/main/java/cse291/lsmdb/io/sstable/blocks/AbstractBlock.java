@@ -21,4 +21,14 @@ abstract class AbstractBlock implements Block {
     public ComponentFile getReadableComponentFile() throws IOException {
         return new ComponentFile(getFile());
     }
+
+    public void requireFileExists() throws IOException {
+        File file = getFile();
+        if (!file.exists()) {
+            String parent = file.getParent();
+            File dir = new File(parent);
+            if (!dir.exists()) dir.mkdirs();
+            file.createNewFile();
+        }
+    }
 }
