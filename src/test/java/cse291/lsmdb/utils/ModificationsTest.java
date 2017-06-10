@@ -62,7 +62,8 @@ public class ModificationsTest {
 
     @Test
     public void existLimitWithEdit() throws Exception {
-        //TODO
+        int bytesLimit = config.getBlockBytesLimit();
+        int bytesInserted = 0;
     }
 
     @Test
@@ -73,7 +74,16 @@ public class ModificationsTest {
             String value = RandomStringUtils.randomAlphabetic(100);
             mod.put(row, Modification.put(Timed.now(value)));
             bytesInserted += value.getBytes().length + Long.BYTES;
-            Assert.assertEquals(bytesInserted,mod.bytesNum());
+            Assert.assertEquals(bytesInserted, mod.bytesNum());
+        }
+
+        for(int i = 0; i < 100; i++){
+            String row = String.format("test%d",i);
+            String value = RandomStringUtils.randomAlphabetic(200);
+            String last = RandomStringUtils.randomAlphabetic(100);
+            mod.put(row, Modification.put(Timed.now(value)));
+            bytesInserted += value.getBytes().length - last.getBytes().length;
+            Assert.assertEquals(bytesInserted, mod.bytesNum());
         }
     }
 
@@ -148,8 +158,9 @@ public class ModificationsTest {
         }
     }
 
-    @Test
+    @Test(expected = UnsupportedOperationException.class)
     public void immutableRef() throws Exception {
-        // Not necessary
+        Modifications imMod = Modifications.immutableRef(mod);
+        imMod.put("good", Modification.put(Timed.now("bad")));
     }
 }

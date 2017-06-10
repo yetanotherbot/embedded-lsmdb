@@ -51,7 +51,7 @@ public class BitSet {
         return new long[wordOffset(numBits)];
     }
 
-    public final int size() {
+    public final int numLongs() {
         return this.words.length;
     }
 

@@ -1,5 +1,6 @@
 package cse291.lsmdb.io.sstable;
 
+import cse291.lsmdb.io.interfaces.Hasher;
 import cse291.lsmdb.io.interfaces.StringHasher;
 
 /**
@@ -68,4 +69,6 @@ public class MurMurHasher implements StringHasher {
 
         return h1;
     }
+
+
 }

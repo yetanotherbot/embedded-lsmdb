@@ -304,7 +304,7 @@ public class LevelManager {
     }
 
     /**
-     * Compacts a block into this level. In case that the total size exceeds the limit,
+     * Compacts a block into this level. In case that the total numLongs exceeds the limit,
      * return the block needs to push down.
      * Note that config should be used.
      * @param block the block to compact in this level

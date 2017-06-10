@@ -51,7 +51,7 @@ public class Modifications extends TreeMap<String, Modification> {
     }
 
     public boolean existLimit() {
-        return bytesNum > bytesLimit;
+        return bytesNum >= bytesLimit;
     }
 
     public int bytesNum() {
