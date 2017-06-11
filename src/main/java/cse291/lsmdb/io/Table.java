@@ -95,7 +95,7 @@ public class Table implements Flushable, Closeable {
     public List<Row> selectRowWithColumnValue(String columnName, String columnValue)
             throws IOException, InterruptedException {
         Qualifier q = new Qualifier("=", columnValue);
-        List<Row> result = this.selectRowsWithColumnQualifier(columnName, q);
+        List<Row> result = this.selectRowsWithQualifier(columnName, q);
         for(Row row: result){
             this.recentlyAccessedRows.add(new Timed<>(row));
         }
@@ -114,47 +114,42 @@ public class Table implements Flushable, Closeable {
      */
     public List<Row> selectRowsWithColumnRange(String columnName, String operator, String target) throws IOException, InterruptedException {
         Qualifier q = new Qualifier(operator, target);
-        return this.selectRowsWithColumnQualifier(columnName, q);
+        return this.selectRowsWithQualifier(columnName, q);
     }
 
-    private List<Row> selectRowsWithColumnQualifier(String columnName, Qualifier q) throws IOException, InterruptedException {
-        //Map<ColumnName, Map<RowName, ColumnValue>>
-        Map<String, Map<String, String>> columnResults = new HashMap<>();
+    private List<Row> selectRowsWithQualifier(String columnName, Qualifier q) throws IOException, InterruptedException {
+        Map<String, Row> result = new HashMap<>();
 
-        // Request result in each column
+        // Create rows with only the selected column first
+        Map<String, String> selected = this.sstMap.get(columnName).getColumnWithQualifier(q);
+        for (Map.Entry<String, String> entry : selected.entrySet()) {
+            String rowKey = entry.getKey();
+            String colValue = entry.getValue();
+            Row toAdd = new Row(rowKey,new HashMap<>());
+            toAdd.addColumn(columnName,colValue);
+            result.put(rowKey,toAdd);
+        }
+
+        // Request rows with rowKey in each column
+        Qualifier rowQ = new Qualifier(result.keySet());
         for (String colName : this.sstMap.keySet()) {
-            if (colName.equals(columnName)) {
-                columnResults.put(colName,
-                        this.sstMap.get(colName).getColumnWithQualifier(q));
-            } else {
-                columnResults.put(colName,
-                        this.sstMap.get(colName).getColumnWithQualifier(new Qualifier())); // Grab Everything
-            }
-        }
-
-        // Compile columns into row information
-        Map<String, Map<String, String>> resultMap = new HashMap<>();
-        for (Map.Entry<String, Map<String, String>> entry : columnResults.entrySet()) {
-            String colName = entry.getKey();
-            for (Map.Entry<String, String> col : entry.getValue().entrySet()) {
-                String rowKey = col.getKey();
-                if (!resultMap.containsKey(rowKey)) {
-                    resultMap.put(rowKey, new HashMap<>());
+            if (!colName.equals(columnName)) {
+                Map<String, String> colValues = this.sstMap.get(colName).getColumnWithQualifier(rowQ);
+                for (Map.Entry<String, String> entry : colValues.entrySet()) {
+                    String rowKey = entry.getKey();
+                    String colValue = entry.getValue();
+                    if (result.containsKey(rowKey)) {
+                        result.get(rowKey).addColumn(colName, colValue);
+                    }
                 }
-                resultMap.get(rowKey).put(colName, col.getValue());
             }
         }
-
-        // Choose those qualify the specific column
-        List<Row> result = new ArrayList<>();
-        for (Map.Entry<String, Map<String, String>> entry : columnResults.entrySet()) {
-            if (entry.getValue().containsKey(columnName)) {
-                Row newRow = new Row(entry.getKey(), entry.getValue());
-                this.recentlyAccessedRows.add(new Timed<>(newRow));
-                result.add(newRow);
-            }
+        // Add rows to cache
+        for(Row row:result.values()){
+            recentlyAccessedRows.add(new Timed<>(row));
         }
-        return result;
+        
+        return new ArrayList<>(result.values());
     }
 
     /**

@@ -26,6 +26,9 @@ public class Row {
         return this.columnValues.containsKey(columnName);
     }
 
+    public String addColumn(String columnName, String columnValue){
+        return this.columnValues.put(columnName,columnValue);
+    }
     public String getRowKey() {
         return this.rowKey;
     }
