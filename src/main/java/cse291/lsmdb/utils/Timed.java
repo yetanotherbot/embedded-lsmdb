@@ -6,7 +6,7 @@ import java.util.Objects;
 /**
  * Created by musteryu on 2017/6/1.
  */
-public class Timed<T> implements Comparable<Timed<T>>{
+public class Timed<T> implements Comparable<Timed<T>> {
     private T val;
     private long timestamp;
 
@@ -19,16 +19,16 @@ public class Timed<T> implements Comparable<Timed<T>>{
         this.timestamp = timestamp;
     }
 
+    public static <T> Timed<T> now(T t) {
+        return new Timed<T>(t);
+    }
+
     public T get() {
         return this.val;
     }
 
     public long getTimestamp() {
         return this.timestamp;
-    }
-
-    public static <T> Timed<T> now(T t) {
-        return new Timed<T>(t);
     }
 
     @Override
@@ -41,6 +41,6 @@ public class Timed<T> implements Comparable<Timed<T>>{
     }
 
     public int compareTo(Timed<T> other) {
-        return (int)(this.timestamp - other.getTimestamp());
+        return (int) (this.timestamp - other.getTimestamp());
     }
 }

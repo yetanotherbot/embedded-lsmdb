@@ -2,10 +2,7 @@ package cse291.lsmdb.io.sstable;
 
 import cse291.lsmdb.io.interfaces.StringHasher;
 import cse291.lsmdb.utils.Modifications;
-import cse291.lsmdb.utils.Row;
-import cse291.lsmdb.utils.Timed;
 
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.function.Function;
 
@@ -43,7 +40,16 @@ public final class SSTableConfig {
 
     private int rowCacheCapacity = 1024;
 
-    private SSTableConfig() { }
+    private SSTableConfig() {
+    }
+
+    public static SSTableConfigBuilder builder() {
+        return new SSTableConfigBuilder();
+    }
+
+    public static SSTableConfig defaultConfig() {
+        return new SSTableConfig();
+    }
 
     public int getBlockBytesLimit() {
         return blockBytesLimit;
@@ -65,7 +71,9 @@ public final class SSTableConfig {
         return memTablesLimit;
     }
 
-    public int getRowCacheCapacity() { return rowCacheCapacity; }
+    public int getRowCacheCapacity() {
+        return rowCacheCapacity;
+    }
 
     public Function<LinkedList<MemTable>, Modifications> getMemTablesFlushStrategy() {
         return memTablesFlushStrategy;
@@ -87,20 +95,13 @@ public final class SSTableConfig {
         return tempBlockFilenameSuffix;
     }
 
-    public static SSTableConfigBuilder builder() {
-        return new SSTableConfigBuilder();
-    }
-
-    public static SSTableConfig defaultConfig() {
-        return new SSTableConfig();
-    }
-
     public int getFileBufferSize() {
         return fileBufferSize;
     }
 
     public static class SSTableConfigBuilder {
         private SSTableConfig config;
+
         private SSTableConfigBuilder() {
             config = new SSTableConfig();
         }

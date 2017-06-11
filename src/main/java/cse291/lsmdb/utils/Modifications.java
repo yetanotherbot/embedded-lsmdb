@@ -27,6 +27,53 @@ public class Modifications extends TreeMap<String, Modification> {
         putAll(other);
     }
 
+    private static int byteLen(String s) {
+        return s.getBytes().length;
+    }
+
+    public static Modifications merge(Modifications m1, Modifications m2, int limit) {
+        Modifications m = new Modifications(limit);
+        for (String r : m1.rows()) m.put(r, m1.get(r));
+        for (String r : m2.rows()) m.put(r, m2.get(r));
+        return m;
+    }
+
+    /**
+     * Merge two Modifications together, and split them again with the first one full of entries
+     *
+     * @param m1    first Modifications
+     * @param m2    second Modifications
+     * @param limit the byte limit for each Modifications
+     * @return array of Modifications
+     */
+
+    public static Queue<Modifications> reassign(Modifications m1, Modifications m2, int limit) {
+        Queue<Modifications> mods = new LinkedList<>();
+        Modifications total = merge(m1, m2, Integer.MAX_VALUE);
+        Modifications m = new Modifications(limit);
+        for (Map.Entry<String, Modification> entry : total.entrySet()) {
+            if (m.existLimit()) {
+                mods.offer(m);
+                m = new Modifications(limit);
+            }
+            m.put(entry.getKey(), entry.getValue());
+        }
+        mods.offer(m);
+        return mods;
+    }
+
+    /**
+     * Gets the immutable reference of the modifications
+     *
+     * @param mods the mods to refer
+     * @return an immutable reference of the modifications
+     */
+    public static Modifications immutableRef(Modifications mods) {
+        Modifications ref = new Modifications(mods);
+        ref.immtable = true;
+        return ref;
+    }
+
     @Override
     public Modification put(String row, Modification curr) {
         if (immtable) throw new UnsupportedOperationException();
@@ -49,13 +96,9 @@ public class Modifications extends TreeMap<String, Modification> {
     }
 
     public void putAll(Modifications m) {
-        for (Map.Entry<String, Modification> entry: m.entrySet()) {
+        for (Map.Entry<String, Modification> entry : m.entrySet()) {
             put(entry.getKey(), entry.getValue());
         }
-    }
-
-    private static int byteLen(String s) {
-        return s.getBytes().length;
     }
 
     public boolean existLimit() {
@@ -80,41 +123,11 @@ public class Modifications extends TreeMap<String, Modification> {
         return s.last();
     }
 
-    public static Modifications merge(Modifications m1, Modifications m2, int limit) {
-        Modifications m = new Modifications(limit);
-        for (String r: m1.rows()) m.put(r, m1.get(r));
-        for (String r: m2.rows()) m.put(r, m2.get(r));
-        return m;
-    }
-
     public Filter calculateFilter(WritableFilter f) {
-        for (String row: rows()) {
+        for (String row : rows()) {
             f.add(row);
         }
         return f;
-    }
-
-    /**
-     * Merge two Modifications together, and split them again with the first one full of entries
-     * @param m1 first Modifications
-     * @param m2 second Modifications
-     * @param limit the byte limit for each Modifications
-     * @return array of Modifications
-     */
-
-    public static Queue<Modifications> reassign(Modifications m1, Modifications m2, int limit) {
-        Queue<Modifications> mods = new LinkedList<>();
-        Modifications total = merge(m1, m2, Integer.MAX_VALUE);
-        Modifications m = new Modifications(limit);
-        for (Map.Entry<String, Modification> entry : total.entrySet()) {
-            if (m.existLimit()) {
-                mods.offer(m);
-                m = new Modifications(limit);
-            }
-            m.put(entry.getKey(), entry.getValue());
-        }
-        mods.offer(m);
-        return mods;
     }
 
     public boolean offer(Modifications modifications) {
@@ -137,28 +150,17 @@ public class Modifications extends TreeMap<String, Modification> {
         } else {
             Modifications ret = new Modifications(bytesLimit);
             List<String> shouldClean = new ArrayList<>();
-            for (String r: rows()) {
+            for (String r : rows()) {
                 ret.put(r, get(r));
                 shouldClean.add(r);
                 if (ret.existLimit()) {
                     break;
                 }
             }
-            for (String sc: shouldClean) {
+            for (String sc : shouldClean) {
                 remove(sc);
             }
             return ret;
         }
-    }
-
-    /**
-     * Gets the immutable reference of the modifications
-     * @param mods the mods to refer
-     * @return an immutable reference of the modifications
-     */
-    public static Modifications immutableRef(Modifications mods) {
-        Modifications ref = new Modifications(mods);
-        ref.immtable = true;
-        return ref;
     }
 }

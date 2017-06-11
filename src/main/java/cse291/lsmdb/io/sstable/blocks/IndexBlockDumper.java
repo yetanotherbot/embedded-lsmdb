@@ -2,8 +2,7 @@ package cse291.lsmdb.io.sstable.blocks;
 
 import cse291.lsmdb.utils.Pair;
 
-import java.io.*;
-import java.nio.file.Files;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -21,7 +20,7 @@ public class IndexBlockDumper {
         ComponentFile c = null;
         try {
             c = idx.getWritableComponentFile();
-            for (Pair<String, String> range: ranges) {
+            for (Pair<String, String> range : ranges) {
 //                System.out.println("put: " + range);
                 c.writeString(range.left);
                 c.writeString(range.right);

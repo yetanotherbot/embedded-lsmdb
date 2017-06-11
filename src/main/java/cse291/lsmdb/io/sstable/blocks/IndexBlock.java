@@ -10,19 +10,19 @@ import java.io.IOException;
  * A loader for Index file. It is used to know the key range of each data block.
  * The format of the Index file for now is:
  * ----------------------------------------------------------------------------
- *                       n: #offset of Indices in this file (32)
+ * n: #offset of Indices in this file (32)
  * ----------------------------------------------------------------------------
- *  offset 1 (32) |  offset 2 (32) |  offset 3 (32) |   ....   |  offset n (32)
+ * offset 1 (32) |  offset 2 (32) |  offset 3 (32) |   ....   |  offset n (32)
  * ----------------------------------------------------------------------------
- *  First row length (16) | name (var) | First col length (16) | name (var)    |
- *                                                                              > Block 1
- *  Last row length (16)  | name (var) | Last col length (16)  | name (var)    |
+ * First row length (16) | name (var) | First col length (16) | name (var)    |
+ * > Block 1
+ * Last row length (16)  | name (var) | Last col length (16)  | name (var)    |
  * ----------------------------------------------------------------------------
- *                                     ...
+ * ...
  * ----------------------------------------------------------------------------
- *  First row length (16) | name (var) | First col length (16) | name (var)    |
- *                                                                              > Block n
- *  Last row length (16)  | name (var) | Last col length (16)  | name (var)    |
+ * First row length (16) | name (var) | First col length (16) | name (var)    |
+ * > Block n
+ * Last row length (16)  | name (var) | Last col length (16)  | name (var)    |
  * ----------------------------------------------------------------------------
  * The numbers in parentheses indicate the length of bits of the field.
  * If the index file is small enough (in most case), user could load it in memory.

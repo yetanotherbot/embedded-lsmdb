@@ -18,6 +18,7 @@ public class IndexBlockLoader {
 
     /**
      * Get the range of Data block i.
+     *
      * @param i the index of Data block to get the range
      * @return the range of the selected Data block
      */
@@ -56,7 +57,7 @@ public class IndexBlockLoader {
             }
             Comparator<Pair<String, String>> comp = Pair.<String, String>comparator();
             for (int i = 0; i < ranges.size() - 1; i++) {
-                assert comp.compare(ranges.get(i), ranges.get(i+1)) <= 0;
+                assert comp.compare(ranges.get(i), ranges.get(i + 1)) <= 0;
             }
             return ranges;
         } finally {

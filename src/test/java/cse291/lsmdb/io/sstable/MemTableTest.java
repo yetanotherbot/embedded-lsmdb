@@ -1,16 +1,14 @@
 package cse291.lsmdb.io.sstable;
 
 import cse291.lsmdb.io.sstable.blocks.Descriptor;
-import cse291.lsmdb.utils.Modification;
 import cse291.lsmdb.utils.Modifications;
-import cse291.lsmdb.utils.Timed;
 import org.apache.commons.lang.RandomStringUtils;
-import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.NoSuchElementException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by musteryu on 2017/6/9.

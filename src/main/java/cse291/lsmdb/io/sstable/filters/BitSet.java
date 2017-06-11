@@ -18,6 +18,14 @@ public class BitSet {
         this.words = words;
     }
 
+    private static int wordOffset(int bitOffset) {
+        return bitOffset >> ADDRESS_BITS_PER_WORD;
+    }
+
+    private static long[] initWords(int numBits) {
+        return new long[wordOffset(numBits)];
+    }
+
     public void set(int bitOffset) {
         checkBitOffset(bitOffset);
         int wordOffset = wordOffset(bitOffset);
@@ -41,14 +49,6 @@ public class BitSet {
             throw new IndexOutOfBoundsException("bitOffset < 0: " + bitOffset);
         if (bitOffset >= BITS_PER_WORD * words.length)
             throw new IndexOutOfBoundsException("bitOffset > all bits: " + bitOffset);
-    }
-
-    private static int wordOffset(int bitOffset) {
-        return bitOffset >> ADDRESS_BITS_PER_WORD;
-    }
-
-    private static long[] initWords(int numBits) {
-        return new long[wordOffset(numBits)];
     }
 
     public final int numLongs() {

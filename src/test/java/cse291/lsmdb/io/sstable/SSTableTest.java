@@ -1,16 +1,13 @@
 package cse291.lsmdb.io.sstable;
 
 import cse291.lsmdb.io.sstable.blocks.Descriptor;
-import org.apache.commons.lang.RandomStringUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.math.RandomUtils;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.Date;
 import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by musteryu on 2017/6/9.
@@ -41,7 +38,7 @@ public class SSTableTest {
         System.out.println(new Date());
     }
 
-//    @Ignore
+    //    @Ignore
     @Test
     public void put() throws Exception {
         System.out.println(new Date());

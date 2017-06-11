@@ -5,7 +5,6 @@ import cse291.lsmdb.io.sstable.blocks.Descriptor;
 import cse291.lsmdb.io.sstable.compaction.LevelManager;
 import cse291.lsmdb.utils.Modifications;
 import cse291.lsmdb.utils.Qualifier;
-import cse291.lsmdb.utils.Row;
 import cse291.lsmdb.utils.Timed;
 
 import java.io.Closeable;
@@ -19,10 +18,10 @@ import java.util.*;
 public class SSTable implements Flushable, Closeable {
     private final Descriptor desc;
     private final String column;
-    private SSTableConfig config;
     private final LevelManager[] levelManagers;
     private final LinkedList<MemTable> memTables;
     private final int memTablesLimit;
+    private SSTableConfig config;
     private boolean isClosed = false;
 
     public SSTable(Descriptor desc, String column, SSTableConfig config) {
@@ -64,11 +63,12 @@ public class SSTable implements Flushable, Closeable {
 
     /**
      * Go through all the MemTables and Levels of datablocks to find entries meet the qualifier
+     *
      * @param q
      * @return Map of rowKey and columnValue
      */
-    public Map<String,String> getColumnWithQualifier(Qualifier q) throws IOException, InterruptedException {
-        Map<String,Timed<String>> result = new HashMap<>();
+    public Map<String, String> getColumnWithQualifier(Qualifier q) throws IOException, InterruptedException {
+        Map<String, Timed<String>> result = new HashMap<>();
         for (int i = 1; i < config.getOnDiskLevelsLimit(); i++) {
             result = this.mergeEntryMaps(result, this.levelManagers[i].getColumnWithQualifier(q));
         }
@@ -76,35 +76,32 @@ public class SSTable implements Flushable, Closeable {
             result = this.mergeEntryMaps(result, this.memTables.get(i).getColumnWithQualifier(q));
         }
 
-        Map<String,String> toReturn = new HashMap<>();
-        for (Map.Entry<String, Timed<String>> entry : result.entrySet())
-        {
+        Map<String, String> toReturn = new HashMap<>();
+        for (Map.Entry<String, Timed<String>> entry : result.entrySet()) {
             String value = entry.getValue().get();
-            if(value.length() > 0){
-                toReturn.put(entry.getKey(),value);
+            if (value.length() > 0) {
+                toReturn.put(entry.getKey(), value);
             }
         }
         return toReturn;
     }
 
-    private Map<String,Timed<String>> mergeEntryMaps(
-            Map<String,Timed<String>> m1,
-            Map<String,Timed<String>> m2
+    private Map<String, Timed<String>> mergeEntryMaps(
+            Map<String, Timed<String>> m1,
+            Map<String, Timed<String>> m2
     ) {
-        Map<String,Timed<String>> mergedMap = new HashMap<>();
-        for (Map.Entry<String, Timed<String>> entry : m1.entrySet())
-        {
+        Map<String, Timed<String>> mergedMap = new HashMap<>();
+        for (Map.Entry<String, Timed<String>> entry : m1.entrySet()) {
             String rowKey = entry.getKey();
             Timed<String> timedValue = entry.getValue();
-            if(!mergedMap.containsKey(rowKey) || mergedMap.get(rowKey).getTimestamp() < timedValue.getTimestamp()) {
+            if (!mergedMap.containsKey(rowKey) || mergedMap.get(rowKey).getTimestamp() < timedValue.getTimestamp()) {
                 mergedMap.put(entry.getKey(), entry.getValue());
             }
         }
-        for (Map.Entry<String, Timed<String>> entry : m2.entrySet())
-        {
+        for (Map.Entry<String, Timed<String>> entry : m2.entrySet()) {
             String rowKey = entry.getKey();
             Timed<String> timedValue = entry.getValue();
-            if(!mergedMap.containsKey(rowKey) || mergedMap.get(rowKey).getTimestamp() < timedValue.getTimestamp()) {
+            if (!mergedMap.containsKey(rowKey) || mergedMap.get(rowKey).getTimestamp() < timedValue.getTimestamp()) {
                 mergedMap.put(entry.getKey(), entry.getValue());
             }
         }

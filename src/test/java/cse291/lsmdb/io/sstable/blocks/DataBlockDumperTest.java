@@ -8,10 +8,10 @@ import cse291.lsmdb.utils.Timed;
 import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Test;
 
-import java.io.File;
 import java.util.Iterator;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by musteryu on 2017/6/9.

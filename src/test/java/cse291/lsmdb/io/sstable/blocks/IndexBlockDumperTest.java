@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
 
 /**
  * Created by musteryu on 2017/6/9.
@@ -31,7 +31,7 @@ public class IndexBlockDumperTest {
         idxDumper.dump(ranges);
         IndexBlockLoader idxLoader = new IndexBlockLoader(idx);
         ArrayList<Pair<String, String>> ranges2 = idxLoader.getRanges();
-        for (Pair<String, String> r: ranges2) {
+        for (Pair<String, String> r : ranges2) {
             System.out.println(r);
         }
         assertArrayEquals(ranges.toArray(), ranges2.toArray());

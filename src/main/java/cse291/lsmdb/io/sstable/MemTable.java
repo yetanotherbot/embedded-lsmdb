@@ -15,8 +15,8 @@ import java.util.NoSuchElementException;
  */
 public class MemTable {
     private final Descriptor desc;
-    private Modifications modifications;
     private final String column;
+    private Modifications modifications;
     private SSTableConfig config;
 
     public MemTable(Descriptor desc, String column, SSTableConfig config) {
@@ -48,15 +48,14 @@ public class MemTable {
         return inserted != null;
     }
 
-    public synchronized Map<String,Timed<String>> getColumnWithQualifier(Qualifier q){
-        Map<String,Timed<String>> column = new HashMap<>();
-        for (Map.Entry<String, Modification> entry : modifications.entrySet())
-        {
+    public synchronized Map<String, Timed<String>> getColumnWithQualifier(Qualifier q) {
+        Map<String, Timed<String>> column = new HashMap<>();
+        for (Map.Entry<String, Modification> entry : modifications.entrySet()) {
             String rowKey = entry.getKey();
             Modification mod = entry.getValue();
             Timed<String> timedValue = mod.getIfPresent();
-            if(mod.isPut() && q.qualify(timedValue.get())){
-                column.put(rowKey,timedValue);
+            if (mod.isPut() && q.qualify(timedValue.get())) {
+                column.put(rowKey, timedValue);
             }
         }
         return column;
@@ -69,6 +68,7 @@ public class MemTable {
 
     /**
      * Gets an element from the MemTable if it exists
+     *
      * @throws NoSuchElementException if the element is not present in the MemTable
      */
     public String get(String row) throws NoSuchElementException {
@@ -114,5 +114,6 @@ public class MemTable {
         return Modifications.immutableRef(modifications);
     }
 
-    public static class MemTableFull extends Exception {}
+    public static class MemTableFull extends Exception {
+    }
 }

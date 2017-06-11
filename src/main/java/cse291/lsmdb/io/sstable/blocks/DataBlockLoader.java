@@ -8,7 +8,7 @@ import cse291.lsmdb.utils.Modifications;
 import cse291.lsmdb.utils.Qualifier;
 import cse291.lsmdb.utils.Timed;
 
-import java.io.*;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -56,11 +56,10 @@ public class DataBlockLoader extends AbstractSSTableBlock {
         }
     }
 
-    public Map<String,Timed<String>> getColumnWithQualifier(Qualifier q) throws IOException{
-        Map<String,Timed<String>> column = new HashMap<>();
+    public Map<String, Timed<String>> getColumnWithQualifier(Qualifier q) throws IOException {
+        Map<String, Timed<String>> column = new HashMap<>();
         Modifications mods = this.extractModifications(Integer.MAX_VALUE);
-        for (Map.Entry<String, Modification> entry : mods.entrySet())
-        {
+        for (Map.Entry<String, Modification> entry : mods.entrySet()) {
             String rowKey = entry.getKey();
             Modification mod = entry.getValue();
             if (!mod.isRemove()) {

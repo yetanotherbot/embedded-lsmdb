@@ -12,7 +12,7 @@ public class SizeAnalyzer {
 
     public static int analyze(Map<String, Modification> mods) {
         int size = 0;
-        for (String key: mods.keySet()) {
+        for (String key : mods.keySet()) {
             size += key.getBytes().length;
             Modification mod = mods.get(key);
             if (mod.isPut()) {
@@ -23,7 +23,9 @@ public class SizeAnalyzer {
         return size;
     }
 
-    public void reset() { size = 0; }
+    public void reset() {
+        size = 0;
+    }
 
     public int add(Map.Entry<String, Modification> e) {
         size += e.getKey().getBytes().length;

@@ -68,11 +68,11 @@ public class LevelManager {
         }
     }
 
-    public Map<String,Timed<String>> getColumnWithQualifier(Qualifier q) throws IOException, InterruptedException {
+    public Map<String, Timed<String>> getColumnWithQualifier(Qualifier q) throws IOException, InterruptedException {
         synchronized (this) {
             while (shouldWait) this.wait();
         }
-        Map<String,Timed<String>> columns = new HashMap<>();
+        Map<String, Timed<String>> columns = new HashMap<>();
         DataBlock[] dataBlocks = this.getDataBlocks();
         for (DataBlock db : dataBlocks) {
             DataBlockLoader dbLoader = new DataBlockLoader(
@@ -131,13 +131,13 @@ public class LevelManager {
      * 1_1_Data.db,
      * 1_3_Data.db,
      * 1_5_Data.db
-     *
+     * <p>
      * TempDataBlock:
      * 1_2_Data.db.tmp_0,
      * 1_2_Data.db.tmp_1,
      * 1_2_Data.db.tmp_2,
      * 1_4_Data.db.tmp0
-     *
+     * <p>
      * The method will merge them and collect them like:
      * 1_0_Data.db,             -> 1_0_Data.db
      * 1_1_Data.db,             -> 1_1_Data.db
@@ -147,8 +147,9 @@ public class LevelManager {
      * 1_3_Data.db,             -> 1_5_Data.db
      * 1_4_Data.db.tmp_0,       -> 1_6_Data.db
      * 1_5_Data.db              -> 1_7_Data.db
-     *
+     * <p>
      * This method requires the compact() method to remove original data file.
+     *
      * @throws IOException
      */
     private Modifications collect() throws IOException {
@@ -203,7 +204,7 @@ public class LevelManager {
             files.add(tbs[ti++].getFile());
         }
         System.out.println("to merge:");
-        for (File f: files) {
+        for (File f : files) {
             System.out.println(f.getName());
         }
         System.out.println("--------------");
@@ -220,6 +221,7 @@ public class LevelManager {
 
     /**
      * Writes data to TempDataBlocks starting from original index.
+     *
      * @return ranges for index block
      * @throws IOException
      */
@@ -330,6 +332,7 @@ public class LevelManager {
      * Compacts a block into this level. In case that the total numLongs exceeds the limit,
      * return the block needs to push down.
      * Note that config should be used.
+     *
      * @param block the block to compact in this level
      * @return the block to compact to next level. null if not exis
      * @throws IOException

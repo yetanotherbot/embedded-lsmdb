@@ -15,6 +15,17 @@ public class Pair<Left, Right> {
         this.right = right;
     }
 
+    public static <Left extends Comparable<Left>, Right extends Comparable<Right>>
+    Comparator<Pair<Left, Right>> comparator() {
+        return (Pair<Left, Right> o1, Pair<Left, Right> o2) -> {
+            if (o1.left.compareTo(o2.left) < 0) return -1;
+            if (o1.left.compareTo(o2.left) > 0) return 1;
+            if (o1.right.compareTo(o2.right) < 0) return -1;
+            if (o1.right.compareTo(o2.right) > 0) return 1;
+            return 0;
+        };
+    }
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof Pair)) return false;
@@ -25,16 +36,5 @@ public class Pair<Left, Right> {
     @Override
     public String toString() {
         return "(" + left + ", " + right + ")";
-    }
-
-    public static <Left extends Comparable<Left>, Right extends Comparable<Right>>
-    Comparator<Pair<Left, Right>> comparator() {
-        return (Pair<Left, Right> o1, Pair<Left, Right> o2) -> {
-                if (o1.left.compareTo(o2.left) < 0) return -1;
-                if (o1.left.compareTo(o2.left) > 0) return  1;
-                if (o1.right.compareTo(o2.right) < 0) return -1;
-                if (o1.right.compareTo(o2.right) > 0) return  1;
-                return 0;
-        };
     }
 }

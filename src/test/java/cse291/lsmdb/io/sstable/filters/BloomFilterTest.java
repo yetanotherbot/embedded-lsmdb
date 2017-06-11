@@ -2,10 +2,10 @@ package cse291.lsmdb.io.sstable.filters;
 
 import cse291.lsmdb.io.sstable.MurMurHasher;
 import org.apache.commons.lang.RandomStringUtils;
-import org.apache.commons.lang.math.RandomUtils;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by musteryu on 2017/6/9.
@@ -35,7 +35,7 @@ public class BloomFilterTest {
             if (f.isPresent(s)) falsePresent++;
         }
         System.out.printf("false present: %.2f %%\n", falsePresent * 100. / size);
-        for (long l: f.toLongs()) {
+        for (long l : f.toLongs()) {
             System.out.println(l);
         }
     }

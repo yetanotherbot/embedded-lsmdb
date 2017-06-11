@@ -11,8 +11,8 @@ import java.util.Optional;
  */
 public class TempDataBlock extends AbstractBlock implements Comparable<TempDataBlock> {
     private final Descriptor desc;
-    private int level, index, originIndex;
     private final String column;
+    private int level, index, originIndex;
 
     public TempDataBlock(
             Descriptor desc,
@@ -28,32 +28,6 @@ public class TempDataBlock extends AbstractBlock implements Comparable<TempDataB
         this.index = index;
         this.originIndex = originIndex;
         this.column = column;
-    }
-
-    public int getIndex() {
-        return index;
-    }
-
-    public int getOriginIndex() {
-        return originIndex;
-    }
-
-    @Override
-    public File getFile() throws IOException {
-        File dir = desc.getDir();
-        File colDir = new File(dir, column);
-        // <level>_<originIndex>_Data.db.tmp_<index>
-        String filename = String.format(
-            "%d_%d_Data%s_%d", level, originIndex, config.getTempBlockFilenameSuffix(), index
-        );
-        return new File(colDir, filename);
-    }
-
-    public ComponentFile getWritableComponentFile() throws IOException {
-        requireFileExists();
-        if (!getFile().canWrite())
-            getFile().setWritable(true);
-        return new ComponentFile(getFile(), "w", config.getFileBufferSize());
     }
 
     public static boolean isTempDataBlock(String filename, SSTableConfig config) {
@@ -99,17 +73,43 @@ public class TempDataBlock extends AbstractBlock implements Comparable<TempDataB
         }
     }
 
+    public int getIndex() {
+        return index;
+    }
+
+    public int getOriginIndex() {
+        return originIndex;
+    }
+
+    @Override
+    public File getFile() throws IOException {
+        File dir = desc.getDir();
+        File colDir = new File(dir, column);
+        // <level>_<originIndex>_Data.db.tmp_<index>
+        String filename = String.format(
+                "%d_%d_Data%s_%d", level, originIndex, config.getTempBlockFilenameSuffix(), index
+        );
+        return new File(colDir, filename);
+    }
+
+    public ComponentFile getWritableComponentFile() throws IOException {
+        requireFileExists();
+        if (!getFile().canWrite())
+            getFile().setWritable(true);
+        return new ComponentFile(getFile(), "w", config.getFileBufferSize());
+    }
+
     @Override
     public int compareTo(TempDataBlock that) {
         if (that == null) {
             throw new IllegalArgumentException("the block compare to is null");
         }
         if (this.level < that.level) return -1;
-        if (this.level > that.level) return  1;
+        if (this.level > that.level) return 1;
         if (this.originIndex < that.originIndex) return -1;
-        if (this.originIndex > that.originIndex) return  1;
+        if (this.originIndex > that.originIndex) return 1;
         if (this.index < that.index) return -1;
-        if (this.index > that.index) return  1;
+        if (this.index > that.index) return 1;
         return 0;
     }
 }

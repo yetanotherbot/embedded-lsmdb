@@ -1,7 +1,7 @@
 package cse291.lsmdb.io.sstable.filters;
 
-import cse291.lsmdb.io.interfaces.WritableFilter;
 import cse291.lsmdb.io.interfaces.StringHasher;
+import cse291.lsmdb.io.interfaces.WritableFilter;
 
 import java.nio.ByteBuffer;
 
@@ -23,14 +23,14 @@ public class BloomFilter implements WritableFilter {
     }
 
     public boolean isPresent(String key) {
-        for (int off: bitOffsets(key)) {
+        for (int off : bitOffsets(key)) {
             if (!bitset.get(off)) return false;
         }
         return true;
     }
 
     public void add(String key) {
-        for (int off: bitOffsets(key)) {
+        for (int off : bitOffsets(key)) {
             bitset.set(off);
         }
     }

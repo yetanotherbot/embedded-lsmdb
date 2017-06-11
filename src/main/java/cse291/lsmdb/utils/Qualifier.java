@@ -6,17 +6,20 @@ package cse291.lsmdb.utils;
 public class Qualifier {
     private String operator;
     private String target;
-    public Qualifier(){}
-    public Qualifier(String operator, String target){
+
+    public Qualifier() {
+    }
+
+    public Qualifier(String operator, String target) {
         this.operator = operator;
         this.target = target;
     }
 
-    public Boolean qualify(String s){
-        if(operator == null){
+    public Boolean qualify(String s) {
+        if (operator == null) {
             return true;
         }
-        switch(operator){
+        switch (operator) {
             case "<":
                 return s.compareTo(target) == -1;
             case ">":

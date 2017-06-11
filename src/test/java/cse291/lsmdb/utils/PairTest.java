@@ -6,12 +6,18 @@ import org.junit.Test;
 
 import java.util.Comparator;
 
-import static org.junit.Assert.*;
-
 /**
  * Created by musteryu on 2017/6/9.
  */
 public class PairTest {
+    private static int comp(String l1, String r1, String l2, String r2) {
+        if (l1.compareTo(l2) < 0) return -1;
+        if (l1.compareTo(l2) > 0) return 1;
+        if (r1.compareTo(r2) < 0) return -1;
+        if (r1.compareTo(r2) > 0) return 1;
+        return 0;
+    }
+
     @Test
     public void equals() throws Exception {
         Pair<String, String> p1 = new Pair<>("l1", "r1");
@@ -43,14 +49,6 @@ public class PairTest {
                 Assert.assertTrue((l1.compareTo(l2) > 0) || ((l1.equals(l2) && (r1.compareTo(r2) > 0))));
             }
         }
-    }
-
-    private static int comp(String l1, String r1, String l2, String r2) {
-        if (l1.compareTo(l2) < 0) return -1;
-        if (l1.compareTo(l2) > 0) return 1;
-        if (r1.compareTo(r2) < 0) return -1;
-        if (r1.compareTo(r2) > 0) return 1;
-        return 0;
     }
 
 }
