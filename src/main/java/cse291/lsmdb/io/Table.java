@@ -42,7 +42,6 @@ public class Table implements Flushable, Closeable {
 
     /**
      * Insert a row into the table
-     *
      * @param row the row to be added
      * @throws IOException
      */
@@ -58,7 +57,6 @@ public class Table implements Flushable, Closeable {
 
     /**
      * Method to select row by rowKey
-     *
      * @param rowKey the rowKey to search
      * @return the row with the rowKey or null if not exist
      */
@@ -94,14 +92,12 @@ public class Table implements Flushable, Closeable {
      * @param columnValue
      * @return The row with the row key
      */
-    public Row selectRowWithColumnValue(String columnName, String columnValue)
+    public List<Row> selectRowWithColumnValue(String columnName, String columnValue)
             throws IOException, InterruptedException {
         Qualifier q = new Qualifier("=", columnValue);
         List<Row> result = this.selectRowsWithColumnQualifier(columnName, q);
-        if (result.size() > 0) {
-            Row toReturn = result.get(0);
-            this.recentlyAccessedRows.add(new Timed<>(toReturn));
-            return toReturn;
+        for(Row row: result){
+            this.recentlyAccessedRows.add(new Timed<>(row));
         }
         return null;
     }
@@ -183,6 +179,10 @@ public class Table implements Flushable, Closeable {
         for (SSTable table : this.sstMap.values()) {
             table.put(rowKey, null);
         }
+    }
+
+    public String getTableName(){
+        return this.tableName;
     }
 
     /**
