@@ -7,19 +7,22 @@ import cse291.lsmdb.utils.Modifications;
 import cse291.lsmdb.utils.Qualifier;
 import cse291.lsmdb.utils.Timed;
 
+import java.io.Closeable;
+import java.io.Flushable;
 import java.io.IOException;
 import java.util.*;
 
 /**
  * Created by musteryu on 2017/5/30.
  */
-public class SSTable {
+public class SSTable implements Flushable, Closeable {
     private final Descriptor desc;
     private final String column;
     private SSTableConfig config;
     private final LevelManager[] levelManagers;
     private final LinkedList<MemTable> memTables;
     private final int memTablesLimit;
+    private boolean isClosed = false;
 
     public SSTable(Descriptor desc, String column, SSTableConfig config) {
         this.desc = desc;
@@ -34,8 +37,12 @@ public class SSTable {
         memTables.add(new MemTable(desc, column, config));
     }
 
-    public Optional<String> get(String row) throws InterruptedException {
+    private void checkNotClosed() {
+        if (isClosed) throw new RuntimeException("SSTable is already closed");
+    }
 
+    public Optional<String> get(String row) throws InterruptedException {
+        checkNotClosed();
         Iterator<MemTable> descItr = memTables.descendingIterator();
         while (descItr.hasNext()) {
             try {
@@ -79,7 +86,10 @@ public class SSTable {
         return toReturn;
     }
 
-    private Map<String,Timed<String>> mergeEntryMaps(Map<String,Timed<String>> m1, Map<String,Timed<String>> m2){
+    private Map<String,Timed<String>> mergeEntryMaps(
+            Map<String,Timed<String>> m1,
+            Map<String,Timed<String>> m2
+    ) {
         Map<String,Timed<String>> mergedMap = new HashMap<>();
         for (Map.Entry<String, Timed<String>> entry : m1.entrySet())
         {
@@ -101,6 +111,7 @@ public class SSTable {
     }
 
     public synchronized boolean put(String row, String val) throws IOException {
+        checkNotClosed();
         if (row.length() == 0) return false;
         try {
             if (val != null) {
@@ -112,10 +123,9 @@ public class SSTable {
             if (memTables.size() < memTablesLimit) {
                 return memTables.add(new MemTable(desc, column, config));
             }
-            Modifications mods = new Modifications(config.getBlockBytesLimit());
-            while (memTables.size() > config.getMemTablesFlushStrategy().apply(memTablesLimit)) {
-                mods.putAll(memTables.removeFirst().stealModifications());
-            }
+
+            Modifications mods = config.getMemTablesFlushStrategy().apply(memTables);
+
             for (int i = 1; i < levelManagers.length; i++) {
                 if (mods == null) break;
                 LevelManager levelManager = levelManagers[i];
@@ -130,5 +140,34 @@ public class SSTable {
             }
         }
         return true;
+    }
+
+    @Override
+    public void flush() throws IOException {
+        checkNotClosed();
+        Modifications mods = new Modifications(config.getBlockBytesLimit());
+        while (!memTables.isEmpty()) {
+            mods.offer(mods);
+        }
+
+        for (int i = 1; i < levelManagers.length; i++) {
+            if (mods == null) break;
+            LevelManager levelManager = levelManagers[i];
+            System.out.printf("compact begin for level %d\n", i);
+            levelManager.freeze();
+            mods = levelManager.compact(mods);
+            levelManager.unfreeze();
+            System.out.printf("compact success for level %d\n\n", i);
+        }
+
+        if (mods != null) {
+            throw new RuntimeException("out of storage");
+        }
+    }
+
+    @Override
+    public void close() throws IOException {
+        flush();
+        isClosed = true;
     }
 }

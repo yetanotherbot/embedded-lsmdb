@@ -1,7 +1,9 @@
 package cse291.lsmdb.io.sstable;
 
 import cse291.lsmdb.io.interfaces.StringHasher;
+import cse291.lsmdb.utils.Modifications;
 
+import java.util.LinkedList;
 import java.util.function.Function;
 
 /**
@@ -16,7 +18,13 @@ public final class SSTableConfig {
 
     private int onDiskLevelsLimit = 3;
 
-    private Function<Integer, Integer> memTablesFlushStrategy = n -> n - 1;
+    private Function<LinkedList<MemTable>, Modifications> memTablesFlushStrategy = l -> {
+        Modifications mod = new Modifications(blockBytesLimit);
+        while (l.size() > 1) {
+            mod.offer(l.removeFirst().stealModifications());
+        }
+        return mod;
+    };
 
     private int memTablesLimit = 4;
 
@@ -27,6 +35,8 @@ public final class SSTableConfig {
     private String blockFilenameSuffix = ".db";
 
     private String tempBlockFilenameSuffix = ".db.tmp";
+
+    private int fileBufferSize = 256 * 256;
 
     private SSTableConfig() { }
 
@@ -50,7 +60,7 @@ public final class SSTableConfig {
         return memTablesLimit;
     }
 
-    public Function<Integer, Integer> getMemTablesFlushStrategy() {
+    public Function<LinkedList<MemTable>, Modifications> getMemTablesFlushStrategy() {
         return memTablesFlushStrategy;
     }
 
@@ -76,6 +86,10 @@ public final class SSTableConfig {
 
     public static SSTableConfig defaultConfig() {
         return new SSTableConfig();
+    }
+
+    public int getFileBufferSize() {
+        return fileBufferSize;
     }
 
     public static class SSTableConfigBuilder {
@@ -104,7 +118,8 @@ public final class SSTableConfig {
             return this;
         }
 
-        public SSTableConfigBuilder setBlocksNumLimitForLevel(Function<Integer, Integer> blocksNumLimitForLevel) {
+        public SSTableConfigBuilder setBlocksNumLimitForLevel(
+                Function<Integer, Integer> blocksNumLimitForLevel) {
             config.blocksNumLimitForLevel = blocksNumLimitForLevel;
             return this;
         }
@@ -129,8 +144,14 @@ public final class SSTableConfig {
             return this;
         }
 
-        public SSTableConfigBuilder setMemTablesFlushStrategy(Function<Integer, Integer> f) {
+        public SSTableConfigBuilder setMemTablesFlushStrategy(
+                Function<LinkedList<MemTable>, Modifications> f) {
             config.memTablesFlushStrategy = f;
+            return this;
+        }
+
+        public SSTableConfigBuilder setFileBufferSize(int size) {
+            config.fileBufferSize = size;
             return this;
         }
 

@@ -51,6 +51,6 @@ public class IndexBlock extends AbstractBlock {
     }
 
     public ComponentFile getWritableComponentFile() throws IOException {
-        return new ComponentFile(getFile(), "rw");
+        return new ComponentFile(getFile(), "w", config.getFileBufferSize());
     }
 }

@@ -35,12 +35,12 @@ public class DataBlockDumper {
             c.writeFilter(filter);
             for (String row: modifications.rows()) {
 //                System.out.println(row);
-                c.writeUTF(row);
+                c.writeString(row);
                 Modification mod = modifications.get(row);
                 if (mod.isPut()) {
-                    c.writeUTF(mod.getIfPresent().get());
+                    c.writeString(mod.getIfPresent().get());
                 } else {
-                    c.writeUTF("");
+                    c.writeString("");
                 }
                 c.writeLong(mod.getTimestamp());
             }

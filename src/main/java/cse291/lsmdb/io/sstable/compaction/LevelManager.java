@@ -13,10 +13,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
@@ -29,8 +25,7 @@ public class LevelManager {
     private final SSTableConfig config;
     private final String column;
     private ReentrantReadWriteLock lock;
-//    private AtomicBoolean shouldWait;
-    private ExecutorService threadPool;
+    private volatile boolean shouldWait;
     // TODO: 2017/6/9 parallelize compactions in the future
 
     public LevelManager(Descriptor desc, String column, int level, SSTableConfig config) {
@@ -40,8 +35,7 @@ public class LevelManager {
         this.levelBlocksLimit = config.getBlocksNumLimitForLevel().apply(level);
         this.column = column;
         this.lock = new ReentrantReadWriteLock(true);
-//        this.shouldWait = new AtomicBoolean(false);
-        this.threadPool = Executors.newCachedThreadPool();
+        this.shouldWait = false;
     }
 
     private IndexBlock getIndexBlock() {
@@ -54,10 +48,11 @@ public class LevelManager {
 
     public Optional<String> get(String row) throws InterruptedException {
         try {
-//            while (shouldWait.get()) {
-//                wait();
-//            }
-//            lock.readLock().lock();
+            synchronized (this) {
+                while (shouldWait) {
+                    this.wait();
+                }
+            }
             int index = getIndexBlockLoader().lookup(row);
             if (index != -1) {
                 DataBlock dataBlock = new DataBlock(desc, column, level, index, config);
@@ -71,8 +66,6 @@ public class LevelManager {
             return Optional.empty();
         } catch (NoSuchElementException e) {
             return Optional.empty();
-        } finally {
-//            lock.readLock().unlock();
         }
     }
 
@@ -84,6 +77,11 @@ public class LevelManager {
             columns.putAll(dbLoader.getColumnWithQualifier(q));
         }
         return columns;
+    }
+
+    private File getColumnDir() {
+        File dir = getDesc().getDir();
+        return new File(dir, column);
     }
 
     private DataBlock[] getDataBlocks() {
@@ -112,14 +110,14 @@ public class LevelManager {
         return tmpBlocks;
     }
 
-    public void freeze() {
-//        shouldWait.set(true);
+    public synchronized void freeze() {
+        shouldWait = true;
         lock.writeLock().lock();
     }
 
-    public void unfreeze() {
-//        shouldWait.set(false);
-//        notifyAll();
+    public synchronized void unfreeze() {
+        shouldWait = false;
+        notifyAll();
         lock.writeLock().unlock();
     }
 
@@ -162,7 +160,9 @@ public class LevelManager {
             truncateIndexUpTo(levelBlocksLimit);
             forNext = new Modifications(config.getBlockBytesLimit());
             for (int start = levelBlocksLimit; start < files.size(); start++) {
-                forNext.putAll(load(new DataBlock(desc, column, level, start, config)));
+                DataBlock b = new DataBlock(desc, column, level, start, config);
+                forNext.putAll(load(b));
+                Files.delete(b.getFile().toPath());
             }
         }
 
@@ -171,13 +171,11 @@ public class LevelManager {
 
     private void truncateIndexUpTo(int upTo) throws IOException {
         ArrayList<Pair<String, String>> ranges = getRanges();
-        getIndexBlock().getWritableComponentFile().setLength(0);
         dumpIndex(ranges.subList(0, upTo));
     }
 
     private void truncateIndexRange(int start, int end) throws IOException {
         ArrayList<Pair<String, String>> ranges = getRanges();
-        getIndexBlock().getWritableComponentFile().setLength(0);
         ArrayList<Pair<String, String>> newRanges = new ArrayList<>(ranges.subList(0, start));
         newRanges.addAll(ranges.subList(end, ranges.size()));
         dumpIndex(newRanges);
@@ -225,11 +223,18 @@ public class LevelManager {
     private List<Pair<String, String>> appendBlocks(Modifications block, int originIndex) throws IOException {
         WritableFilter f = new BloomFilter(config.getPerBlockBloomFilterBits(), config.getHasher());
         Modifications d = new Modifications(config.getBlockBytesLimit());
-        List<Pair<String, String>> ranges = new ArrayList<>();
+
+        List<Pair<String, String>> ranges = null;
+        if (getIndexBlock().getFile().exists()) {
+            ranges = new ArrayList<>(getRanges().subList(0, originIndex));
+        } else {
+            ranges = new ArrayList<>();
+        }
+
         int i = 0;
         for (String row : block.rows()) {
             if (d.existLimit()) {
-                ranges.add(new Pair<>(d.firstKey(), d.lastKey()));
+                ranges.add(new Pair<>(d.firstRow(), d.lastRow()));
                 TempDataBlock t = new TempDataBlock(desc, column, level, i, originIndex, config);
                 new DataBlockDumper(t, config.getPerBlockBloomFilterBits()).dump(d, f);
                 d = new Modifications(config.getBlockBytesLimit());
@@ -239,7 +244,7 @@ public class LevelManager {
             f.add(row);
         }
         // left over
-        ranges.add(new Pair<>(d.firstKey(), d.lastKey()));
+        ranges.add(new Pair<>(d.firstRow(), d.lastRow()));
         TempDataBlock t = new TempDataBlock(desc, column, level, i, originIndex, config);
         new DataBlockDumper(t, config.getPerBlockBloomFilterBits()).dump(d, f);
 
@@ -257,11 +262,13 @@ public class LevelManager {
     private int locateBlock(String row) throws IOException {
         IndexBlockLoader idxLoader = getIndexBlockLoader();
         ArrayList<Pair<String, String>> ranges = idxLoader.getRanges();
+        return locateBlock(row, ranges);
+    }
+
+    private int locateBlock(String row, ArrayList<Pair<String, String>> ranges) throws IOException {
         int i = ranges.size() - 1;
-        while (i > 0) {
-            if (ranges.get(i).left.compareTo(row) > 0) --i;
-            else break;
-        }
+        while (i > 0 && ranges.get(i).left.compareTo(row) > 0)
+            --i;
         return i;
     }
 
@@ -289,37 +296,31 @@ public class LevelManager {
     }
 
     private void compactWithExisting(Modifications block) throws IOException {
-        int fst = locateBlock(block.firstKey()), snd = locateBlock(block.lastKey());
+        ArrayList<Pair<String, String>> ranges = getRanges();
+        int fst = locateBlock(block.firstRow(), ranges);
+        int snd = locateBlock(block.lastRow(), ranges);
         DataBlock[] dbs = this.getDataBlocks();
         int j = 0;
-        ArrayList<Pair<String, String>> ranges = getRanges();
         ArrayList<Pair<String, String>> newRanges = new ArrayList<>(ranges.subList(0, fst));
 
         for (int i = fst; i <= snd; ++i) {
             Modifications mod = load(dbs[i]);
-            Queue<Modifications> mods = Modifications.reassign(mod, block, config.getBlockBytesLimit());
-            if (mods.isEmpty()) {
-                System.err.println("reassign result is empty, which should not happen");
-                continue;
+            if (block.offer(mod)) {
+                Modifications poll = block.poll();
+                newRanges.add(new Pair<>(poll.firstRow(), poll.lastRow()));
+                dumpTemp(poll, j++, fst);
             }
-
-            while (mods.size() > 1) {
-                final Modifications m = mods.poll();
-                newRanges.add(new Pair<>(m.firstKey(), m.lastKey()));
-                dumpTemp(m, j, i);
-                j++;
-            }
-
-            block = mods.poll();
             Files.delete(dbs[i].getFile().toPath());
         }
-        if (block.size() != 0) {
-            dumpTemp(block, j, snd);
-            newRanges.add(new Pair<>(block.firstKey(), block.lastKey()));
+
+        while (!block.isEmpty()) {
+            Modifications poll = block.poll();
+            newRanges.add(new Pair<>(poll.firstRow(), poll.lastRow()));
+            dumpTemp(poll, j++, fst);
         }
+
         newRanges.addAll(ranges.subList(snd + 1, ranges.size()));
         dumpIndex(newRanges);
-
     }
 
     /**

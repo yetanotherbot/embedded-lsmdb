@@ -24,6 +24,7 @@ public class Modifications extends TreeMap<String, Modification> {
         this.bytesLimit = other.bytesLimit;
         this.bytesNum = other.bytesNum;
         immtable = false;
+        putAll(other);
     }
 
     @Override
@@ -41,9 +42,16 @@ public class Modifications extends TreeMap<String, Modification> {
         } else {
             if (curr.isPut()) bytesNum += byteLen(curr.getIfPresent().get());
             bytesNum += Long.BYTES;
+            bytesNum += byteLen(row);
         }
         super.put(row, curr);
         return curr;
+    }
+
+    public void putAll(Modifications m) {
+        for (Map.Entry<String, Modification> entry: m.entrySet()) {
+            put(entry.getKey(), entry.getValue());
+        }
     }
 
     private static int byteLen(String s) {
@@ -59,7 +67,17 @@ public class Modifications extends TreeMap<String, Modification> {
     }
 
     public Set<String> rows() {
-        return keySet();
+        return super.keySet();
+    }
+
+    public String firstRow() {
+        TreeSet<String> s = new TreeSet<>(super.keySet());
+        return s.first();
+    }
+
+    public String lastRow() {
+        TreeSet<String> s = new TreeSet<>(super.keySet());
+        return s.last();
     }
 
     public static Modifications merge(Modifications m1, Modifications m2, int limit) {
@@ -97,6 +115,40 @@ public class Modifications extends TreeMap<String, Modification> {
         }
         mods.offer(m);
         return mods;
+    }
+
+    public boolean offer(Modifications modifications) {
+        putAll(modifications);
+        return existLimit();
+    }
+
+    @Override
+    public void clear() {
+        bytesNum = 0;
+        immtable = false;
+        super.clear();
+    }
+
+    public Modifications poll() {
+        if (!existLimit()) {
+            Modifications ret = new Modifications(this);
+            clear();
+            return ret;
+        } else {
+            Modifications ret = new Modifications(bytesLimit);
+            List<String> shouldClean = new ArrayList<>();
+            for (String r: rows()) {
+                ret.put(r, get(r));
+                shouldClean.add(r);
+                if (ret.existLimit()) {
+                    break;
+                }
+            }
+            for (String sc: shouldClean) {
+                remove(sc);
+            }
+            return ret;
+        }
     }
 
     /**

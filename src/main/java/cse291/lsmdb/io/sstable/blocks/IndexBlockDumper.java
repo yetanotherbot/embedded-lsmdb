@@ -22,8 +22,9 @@ public class IndexBlockDumper {
         try {
             c = idx.getWritableComponentFile();
             for (Pair<String, String> range: ranges) {
-                c.writeUTF(range.left);
-                c.writeUTF(range.right);
+//                System.out.println("put: " + range);
+                c.writeString(range.left);
+                c.writeString(range.right);
             }
         } finally {
             ComponentFile.tryClose(c);

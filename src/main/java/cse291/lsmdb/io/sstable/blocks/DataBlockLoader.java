@@ -36,9 +36,9 @@ public class DataBlockLoader extends AbstractSSTableBlock {
             if (!filter.isPresent(row)) {
                 throw new NoSuchElementException("no such element");
             }
-            while (c.getFilePointer() < c.length()) {
-                String crow = c.readUTF();
-                String cval = c.readUTF();
+            while (!c.eof()) {
+                String crow = c.readString();
+                String cval = c.readString();
                 long timestamp = c.readLong();
                 if (crow.equals(row)) {
                     if (cval.length() == 0) {
@@ -81,9 +81,9 @@ public class DataBlockLoader extends AbstractSSTableBlock {
                 c.readLong();
             }
             Modifications mods = new Modifications(limit);
-            while (c.getFilePointer() < c.length()) {
-                String crow = c.readUTF();
-                String cval = c.readUTF();
+            while (!c.eof()) {
+                String crow = c.readString();
+                String cval = c.readString();
                 long timestamp = c.readLong();
                 if (cval.length() == 0) {
                     mods.put(crow, Modification.remove(timestamp));

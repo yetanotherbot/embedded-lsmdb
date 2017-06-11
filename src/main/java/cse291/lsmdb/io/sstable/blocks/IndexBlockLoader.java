@@ -4,6 +4,7 @@ import cse291.lsmdb.utils.Pair;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 /**
  * Created by musteryu on 2017/6/4.
@@ -45,13 +46,21 @@ public class IndexBlockLoader {
     public ArrayList<Pair<String, String>> getRanges() throws IOException {
         ComponentFile c = indexBlock.getReadableComponentFile();
         ArrayList<Pair<String, String>> ranges = new ArrayList<>();
-        while (c.getFilePointer() < c.length()) {
-            String r1 = c.readUTF();
-            String r2 = c.readUTF();
-            if (r1 != null && r2 != null)
-                ranges.add(new Pair<>(r1, r2));
+        try {
+            while (!c.eof()) {
+                String r1 = c.readString();
+                String r2 = c.readString();
+                if (r1 != null && r2 != null)
+                    ranges.add(new Pair<>(r1, r2));
+//                System.out.println("get: " + new Pair<>(r1, r2));
+            }
+            Comparator<Pair<String, String>> comp = Pair.<String, String>comparator();
+            for (int i = 0; i < ranges.size() - 1; i++) {
+                assert comp.compare(ranges.get(i), ranges.get(i+1)) <= 0;
+            }
+            return ranges;
+        } finally {
+            c.tryClose();
         }
-        c.close();
-        return ranges;
     }
 }

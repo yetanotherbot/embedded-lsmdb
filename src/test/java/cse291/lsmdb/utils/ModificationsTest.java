@@ -163,4 +163,36 @@ public class ModificationsTest {
         Modifications imMod = Modifications.immutableRef(mod);
         imMod.put("good", Modification.put(Timed.now("bad")));
     }
+
+    @Test
+    public void offer() throws Exception {
+        Modifications mod = new Modifications(config.getBlockBytesLimit());
+        while (!mod.existLimit()) {
+            String v = RandomStringUtils.randomAlphabetic(50);
+            mod.put(RandomStringUtils.randomAlphabetic(50), Modification.put(Timed.now(v)));
+        }
+        Modifications pool = new Modifications(config.getBlockBytesLimit());
+        Assert.assertFalse(pool.existLimit());
+        Assert.assertTrue(pool.offer(mod));
+    }
+
+    @Test
+    public void poll() throws Exception {
+        Modifications mod = new Modifications(config.getBlockBytesLimit() * 4);
+        while (!mod.existLimit()) {
+            String v = RandomStringUtils.randomAlphabetic(50);
+            mod.put(RandomStringUtils.randomAlphabetic(50), Modification.put(Timed.now(v)));
+        }
+        Modifications pool = new Modifications(config.getBlockBytesLimit());
+        pool.offer(mod);
+        Modifications res = new Modifications(config.getBlockBytesLimit() * 4);
+        int i = 0;
+        while (!pool.isEmpty()) {
+            if (i < 3) Assert.assertFalse(res.offer(pool.poll()));
+            else Assert.assertTrue(res.offer(pool.poll()));
+            i++;
+        }
+        Assert.assertTrue(pool.isEmpty());
+        Assert.assertEquals(res, mod);
+    }
 }

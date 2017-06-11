@@ -53,7 +53,7 @@ public class TempDataBlock extends AbstractBlock implements Comparable<TempDataB
         requireFileExists();
         if (!getFile().canWrite())
             getFile().setWritable(true);
-        return new ComponentFile(getFile(), "rw");
+        return new ComponentFile(getFile(), "w", config.getFileBufferSize());
     }
 
     public static boolean isTempDataBlock(String filename, SSTableConfig config) {

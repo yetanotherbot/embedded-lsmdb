@@ -19,7 +19,7 @@ abstract class AbstractBlock implements Block {
     public abstract File getFile() throws IOException;
 
     public ComponentFile getReadableComponentFile() throws IOException {
-        return new ComponentFile(getFile());
+        return new ComponentFile(getFile(), config.getFileBufferSize());
     }
 
     public void requireFileExists() throws IOException {
