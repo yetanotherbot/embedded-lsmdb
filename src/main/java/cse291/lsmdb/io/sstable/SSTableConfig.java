@@ -2,7 +2,10 @@ package cse291.lsmdb.io.sstable;
 
 import cse291.lsmdb.io.interfaces.StringHasher;
 import cse291.lsmdb.utils.Modifications;
+import cse291.lsmdb.utils.Row;
+import cse291.lsmdb.utils.Timed;
 
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.function.Function;
 
@@ -38,6 +41,8 @@ public final class SSTableConfig {
 
     private int fileBufferSize = 256 * 256;
 
+    private int rowCacheCapacity = 1024;
+
     private SSTableConfig() { }
 
     public int getBlockBytesLimit() {
@@ -59,6 +64,8 @@ public final class SSTableConfig {
     public int getMemTablesLimit() {
         return memTablesLimit;
     }
+
+    public int getRowCacheCapacity() { return rowCacheCapacity; }
 
     public Function<LinkedList<MemTable>, Modifications> getMemTablesFlushStrategy() {
         return memTablesFlushStrategy;

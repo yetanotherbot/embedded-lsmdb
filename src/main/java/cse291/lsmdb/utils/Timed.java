@@ -6,7 +6,7 @@ import java.util.Objects;
 /**
  * Created by musteryu on 2017/6/1.
  */
-public class Timed<T> {
+public class Timed<T> implements Comparable<Timed<T>>{
     private T val;
     private long timestamp;
 
@@ -38,5 +38,9 @@ public class Timed<T> {
             return Objects.equals(this.val, that.val) && this.timestamp == that.timestamp;
         }
         return false;
+    }
+
+    public int compareTo(Timed<T> other) {
+        return (int)(this.timestamp - other.getTimestamp());
     }
 }

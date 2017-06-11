@@ -5,6 +5,7 @@ import cse291.lsmdb.io.sstable.blocks.Descriptor;
 import cse291.lsmdb.io.sstable.compaction.LevelManager;
 import cse291.lsmdb.utils.Modifications;
 import cse291.lsmdb.utils.Qualifier;
+import cse291.lsmdb.utils.Row;
 import cse291.lsmdb.utils.Timed;
 
 import java.io.Closeable;
