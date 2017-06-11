@@ -42,6 +42,7 @@ public class Table implements Flushable, Closeable {
 
     /**
      * Insert a row into the table
+     *
      * @param row the row to be added
      * @throws IOException
      */
@@ -57,6 +58,7 @@ public class Table implements Flushable, Closeable {
 
     /**
      * Method to select row by rowKey
+     *
      * @param rowKey the rowKey to search
      * @return the row with the rowKey or null if not exist
      */
@@ -96,7 +98,7 @@ public class Table implements Flushable, Closeable {
             throws IOException, InterruptedException {
         Qualifier q = new Qualifier("=", columnValue);
         List<Row> result = this.selectRowsWithQualifier(columnName, q);
-        for(Row row: result){
+        for (Row row : result) {
             this.recentlyAccessedRows.add(new Timed<>(row));
         }
         return null;
@@ -125,9 +127,9 @@ public class Table implements Flushable, Closeable {
         for (Map.Entry<String, String> entry : selected.entrySet()) {
             String rowKey = entry.getKey();
             String colValue = entry.getValue();
-            Row toAdd = new Row(rowKey,new HashMap<>());
-            toAdd.addColumn(columnName,colValue);
-            result.put(rowKey,toAdd);
+            Row toAdd = new Row(rowKey, new HashMap<>());
+            toAdd.addColumn(columnName, colValue);
+            result.put(rowKey, toAdd);
         }
 
         // Request rows with rowKey in each column
@@ -145,10 +147,10 @@ public class Table implements Flushable, Closeable {
             }
         }
         // Add rows to cache
-        for(Row row:result.values()){
+        for (Row row : result.values()) {
             recentlyAccessedRows.add(new Timed<>(row));
         }
-        
+
         return new ArrayList<>(result.values());
     }
 
@@ -176,7 +178,7 @@ public class Table implements Flushable, Closeable {
         }
     }
 
-    public String getTableName(){
+    public String getTableName() {
         return this.tableName;
     }
 

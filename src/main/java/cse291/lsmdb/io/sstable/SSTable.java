@@ -94,14 +94,16 @@ public class SSTable implements Flushable, Closeable {
         for (Map.Entry<String, Timed<String>> entry : m1.entrySet()) {
             String rowKey = entry.getKey();
             Timed<String> timedValue = entry.getValue();
-            if (!mergedMap.containsKey(rowKey) || mergedMap.get(rowKey).getTimestamp() < timedValue.getTimestamp()) {
+            if (!mergedMap.containsKey(rowKey)
+                    || mergedMap.get(rowKey).getTimestamp() < timedValue.getTimestamp()) {
                 mergedMap.put(entry.getKey(), entry.getValue());
             }
         }
         for (Map.Entry<String, Timed<String>> entry : m2.entrySet()) {
             String rowKey = entry.getKey();
             Timed<String> timedValue = entry.getValue();
-            if (!mergedMap.containsKey(rowKey) || mergedMap.get(rowKey).getTimestamp() < timedValue.getTimestamp()) {
+            if (!mergedMap.containsKey(rowKey) ||
+                    mergedMap.get(rowKey).getTimestamp() < timedValue.getTimestamp()) {
                 mergedMap.put(entry.getKey(), entry.getValue());
             }
         }
@@ -112,7 +114,7 @@ public class SSTable implements Flushable, Closeable {
         checkNotClosed();
         if (row.length() == 0) return false;
         try {
-            if (val != null || !val.isEmpty()) {
+            if (val != null && !val.isEmpty()) {
                 memTables.getLast().put(row, val);
             } else {
                 memTables.getLast().remove(row);
@@ -145,7 +147,7 @@ public class SSTable implements Flushable, Closeable {
         checkNotClosed();
         Modifications mods = new Modifications(config.getBlockBytesLimit());
         while (!memTables.isEmpty()) {
-            mods.offer(mods);
+            mods.offer(memTables.removeFirst().stealModifications());
         }
 
         for (int i = 1; i < levelManagers.length; i++) {

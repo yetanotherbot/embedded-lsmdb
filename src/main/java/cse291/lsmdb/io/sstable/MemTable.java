@@ -54,7 +54,7 @@ public class MemTable {
             String rowKey = entry.getKey();
             Modification mod = entry.getValue();
             Timed<String> timedValue = mod.getIfPresent();
-            if (mod.isPut() && q.qualify(rowKey,timedValue.get())) {
+            if (mod.isPut() && q.qualify(rowKey, timedValue.get())) {
                 column.put(rowKey, timedValue);
             }
         }

@@ -23,10 +23,10 @@ public class Qualifier {
     }
 
     public Boolean qualify(String rowName, String colValue) {
-        if(operator == null && rowKeys == null){
+        if (operator == null && rowKeys == null) {
             return true;
         }
-        if(rowKeys != null){
+        if (rowKeys != null) {
             return rowKeys.contains(rowName);
         }
         switch (operator) {
