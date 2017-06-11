@@ -1,12 +1,14 @@
 package cse291.lsmdb.io;
 
-import cse291.lsmdb.io.sstable.MemTable;
 import cse291.lsmdb.io.sstable.SSTable;
 import cse291.lsmdb.io.sstable.SSTableConfig;
 import cse291.lsmdb.io.sstable.blocks.Descriptor;
 import cse291.lsmdb.utils.*;
 
+import java.io.Closeable;
+import java.io.Flushable;
 import java.io.IOException;
+import java.sql.Wrapper;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,9 +17,9 @@ import java.util.Map;
 /**
  * Created by CielBlade on 6/8/17.
  */
-public class Table {
+public class Table implements Flushable, Closeable {
     private String tableName;
-    private Map<String, SSTable> SSTableMap;
+    private Map<String, SSTable> sstMap;
 
     /**
      * Constructor to create a table based on tableName and columnNames
@@ -26,12 +28,12 @@ public class Table {
      */
     public Table(String tableName, String[] columnNames){
         this.tableName = tableName;
-        this.SSTableMap = new HashMap<>();
+        this.sstMap = new HashMap<>();
         // TODO: Set correct Descriptor & Config
         Descriptor desc = new Descriptor(tableName,"","",columnNames);
         SSTableConfig config = SSTableConfig.defaultConfig();
         for (String columnName: columnNames){
-            this.SSTableMap.put(columnName,new SSTable(desc,columnName,config));
+            this.sstMap.put(columnName,new SSTable(desc,columnName,config));
         }
     }
 
@@ -42,10 +44,10 @@ public class Table {
      */
     public void insert(Row row) throws IOException{
         // TODO: Add to the rowChache
-        for(String columnName : this.SSTableMap.keySet()){
+        for(String columnName : this.sstMap.keySet()){
             if(row.hasColumn(columnName)) {
                 //TODO: Handle memTableFull, maybe just let memTable flush itself when full
-                this.SSTableMap.get(columnName).put(row.getRowKey(), row.getColumnValue(columnName));
+                this.sstMap.get(columnName).put(row.getRowKey(), row.getColumnValue(columnName));
             }
         }
     }
@@ -57,8 +59,8 @@ public class Table {
      */
     public Row selectRowKey(String rowKey) throws InterruptedException {
         Map<String,String> columnValues = new HashMap<>();
-        for(String columnName:this.SSTableMap.keySet()){
-            columnValues.put(columnName,this.SSTableMap.get(columnName).get(rowKey).orElse(null));
+        for(String columnName:this.sstMap.keySet()){
+            columnValues.put(columnName,this.sstMap.get(columnName).get(rowKey).orElse(null));
         }
         for(String columnValue:columnValues.values()){
             // As long as one column value is not null, we know this row is not deleted
@@ -75,16 +77,19 @@ public class Table {
      * @param columnValue
      * @return List of qualified Rows
      */
-    public List<Row> selectColumnValue(String columnName, String columnValue) throws IOException{
+    public List<Row> selectColumnValue(String columnName, String columnValue)
+            throws IOException, InterruptedException {
         Map<String, Map<String,String>> columnResults = new HashMap<>();
         Qualifier q = new Qualifier("=",columnValue);
 
         // Request result in each column
-        for(String colName:this.SSTableMap.keySet()){
-            if(colName.equals(columnName)){
-                columnResults.put(colName,this.SSTableMap.get(colName).getColumnWithQualifier(q));
+        for(String colName:this.sstMap.keySet()) {
+            if (colName.equals(columnName)) {
+                columnResults.put(colName,
+                        this.sstMap.get(colName).getColumnWithQualifier(q));
             } else {
-                columnResults.put(colName,this.SSTableMap.get(colName).getColumnWithQualifier(new Qualifier())); // Grab Everything
+                columnResults.put(colName,
+                        this.sstMap.get(colName).getColumnWithQualifier(new Qualifier())); // Grab Everything
             }
         }
 
@@ -131,7 +136,7 @@ public class Table {
      * @param rowKey
      */
     public void deleteRowKey(String rowKey) throws IOException{
-        for(SSTable table:this.SSTableMap.values()){
+        for(SSTable table:this.sstMap.values()){
             table.put(rowKey,null);
         }
     }
@@ -142,5 +147,20 @@ public class Table {
      */
     public void update(Row row) throws IOException{
         this.insert(row);
+    }
+
+    @Override
+    public void flush() throws IOException {
+        for (SSTable t: sstMap.values()) {
+            t.flush();
+        }
+    }
+
+    @Override
+    public void close() throws IOException {
+        for (SSTable t: sstMap.values()) {
+            t.close();
+        }
+        sstMap.clear();
     }
 }

@@ -63,10 +63,10 @@ public class DataBlockLoader extends AbstractSSTableBlock {
         {
             String rowKey = entry.getKey();
             Modification mod = entry.getValue();
-            if(!mod.isRemove()){
+            if (!mod.isRemove()) {
                 Timed<String> timedValue = mod.getIfPresent();
-                if(q.qualify(timedValue.get())) {
-                    column.put(rowKey, mod.getIfPresent());
+                if (q.qualify(timedValue.get())) {
+                    column.put(rowKey, timedValue);
                 }
             }
         }

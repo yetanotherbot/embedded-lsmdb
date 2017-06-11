@@ -66,12 +66,12 @@ public class SSTable implements Flushable, Closeable {
      * @param q
      * @return Map of rowKey and columnValue
      */
-    public Map<String,String> getColumnWithQualifier(Qualifier q) throws IOException{
+    public Map<String,String> getColumnWithQualifier(Qualifier q) throws IOException, InterruptedException {
         Map<String,Timed<String>> result = new HashMap<>();
-        for(int i =  0; i < config.getOnDiskLevelsLimit(); i++){
+        for (int i = 1; i < config.getOnDiskLevelsLimit(); i++) {
             result = this.mergeEntryMaps(result, this.levelManagers[i].getColumnWithQualifier(q));
         }
-        for(int i = 0; i < config.getMemTablesLimit(); i++){
+        for (int i = 0; i < config.getMemTablesLimit(); i++) {
             result = this.mergeEntryMaps(result, this.memTables.get(i).getColumnWithQualifier(q));
         }
 
@@ -114,7 +114,7 @@ public class SSTable implements Flushable, Closeable {
         checkNotClosed();
         if (row.length() == 0) return false;
         try {
-            if (val != null) {
+            if (val != null || !val.isEmpty()) {
                 memTables.getLast().put(row, val);
             } else {
                 memTables.getLast().remove(row);
