@@ -2,48 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="aee358cf-f557-4cb7-8261-569957d2f025" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_commons_commons_compress_1_14.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/cse291/lsmdb/io/NoSQLInterface.class" afterPath="$PROJECT_DIR$/target/classes/cse291/lsmdb/io/NoSQLInterface.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/cse291/lsmdb/io/Table.class" afterPath="$PROJECT_DIR$/target/classes/cse291/lsmdb/io/Table.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/cse291/lsmdb/io/sstable/MemTable.class" afterPath="$PROJECT_DIR$/target/classes/cse291/lsmdb/io/sstable/MemTable.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/cse291/lsmdb/io/sstable/MurMurHasher.class" afterPath="$PROJECT_DIR$/target/classes/cse291/lsmdb/io/sstable/MurMurHasher.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/cse291/lsmdb/io/sstable/SSTable.class" afterPath="$PROJECT_DIR$/target/classes/cse291/lsmdb/io/sstable/SSTable.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/cse291/lsmdb/io/sstable/SSTableConfig$SSTableConfigBuilder.class" afterPath="$PROJECT_DIR$/target/classes/cse291/lsmdb/io/sstable/SSTableConfig$SSTableConfigBuilder.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/cse291/lsmdb/io/sstable/SSTableConfig.class" afterPath="$PROJECT_DIR$/target/classes/cse291/lsmdb/io/sstable/SSTableConfig.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/cse291/lsmdb/io/sstable/blocks/ComponentFile.class" afterPath="$PROJECT_DIR$/target/classes/cse291/lsmdb/io/sstable/blocks/ComponentFile.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/cse291/lsmdb/io/sstable/blocks/DataBlock.class" afterPath="$PROJECT_DIR$/target/classes/cse291/lsmdb/io/sstable/blocks/DataBlock.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/cse291/lsmdb/io/sstable/blocks/DataBlockDumper.class" afterPath="$PROJECT_DIR$/target/classes/cse291/lsmdb/io/sstable/blocks/DataBlockDumper.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/cse291/lsmdb/io/sstable/blocks/DataBlockLoader.class" afterPath="$PROJECT_DIR$/target/classes/cse291/lsmdb/io/sstable/blocks/DataBlockLoader.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/cse291/lsmdb/io/sstable/blocks/IndexBlockDumper.class" afterPath="$PROJECT_DIR$/target/classes/cse291/lsmdb/io/sstable/blocks/IndexBlockDumper.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/cse291/lsmdb/io/sstable/blocks/IndexBlockLoader.class" afterPath="$PROJECT_DIR$/target/classes/cse291/lsmdb/io/sstable/blocks/IndexBlockLoader.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/cse291/lsmdb/io/sstable/blocks/TempDataBlock.class" afterPath="$PROJECT_DIR$/target/classes/cse291/lsmdb/io/sstable/blocks/TempDataBlock.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/cse291/lsmdb/io/sstable/compaction/LevelManager.class" afterPath="$PROJECT_DIR$/target/classes/cse291/lsmdb/io/sstable/compaction/LevelManager.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/cse291/lsmdb/io/sstable/compaction/SizeAnalyzer.class" afterPath="$PROJECT_DIR$/target/classes/cse291/lsmdb/io/sstable/compaction/SizeAnalyzer.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/cse291/lsmdb/io/sstable/filters/BitSet.class" afterPath="$PROJECT_DIR$/target/classes/cse291/lsmdb/io/sstable/filters/BitSet.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/cse291/lsmdb/utils/Modification.class" afterPath="$PROJECT_DIR$/target/classes/cse291/lsmdb/utils/Modification.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/cse291/lsmdb/utils/Modifications.class" afterPath="$PROJECT_DIR$/target/classes/cse291/lsmdb/utils/Modifications.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/cse291/lsmdb/utils/Pair.class" afterPath="$PROJECT_DIR$/target/classes/cse291/lsmdb/utils/Pair.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/cse291/lsmdb/utils/Row.class" afterPath="$PROJECT_DIR$/target/classes/cse291/lsmdb/utils/Row.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/classes/cse291/lsmdb/utils/Timed.class" afterPath="$PROJECT_DIR$/target/classes/cse291/lsmdb/utils/Timed.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/test-classes/cse291/lsmdb/io/sstable/MemTableTest.class" afterPath="$PROJECT_DIR$/target/test-classes/cse291/lsmdb/io/sstable/MemTableTest.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/test-classes/cse291/lsmdb/io/sstable/SSTableTest.class" afterPath="$PROJECT_DIR$/target/test-classes/cse291/lsmdb/io/sstable/SSTableTest.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/test-classes/cse291/lsmdb/io/sstable/blocks/IndexBlockLoaderTest.class" afterPath="$PROJECT_DIR$/target/test-classes/cse291/lsmdb/io/sstable/blocks/IndexBlockLoaderTest.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/test-classes/cse291/lsmdb/io/sstable/blocks/TempDataBlockTest.class" afterPath="$PROJECT_DIR$/target/test-classes/cse291/lsmdb/io/sstable/blocks/TempDataBlockTest.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/test-classes/cse291/lsmdb/io/sstable/compaction/LevelManagerTest.class" afterPath="$PROJECT_DIR$/target/test-classes/cse291/lsmdb/io/sstable/compaction/LevelManagerTest.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/test-classes/cse291/lsmdb/utils/ModificationTest.class" afterPath="$PROJECT_DIR$/target/test-classes/cse291/lsmdb/utils/ModificationTest.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/test-classes/cse291/lsmdb/utils/ModificationsTest.class" afterPath="$PROJECT_DIR$/target/test-classes/cse291/lsmdb/utils/ModificationsTest.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/test-classes/cse291/lsmdb/utils/PairTest.class" afterPath="$PROJECT_DIR$/target/test-classes/cse291/lsmdb/utils/PairTest.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/target/test-classes/cse291/lsmdb/utils/TimedTest.class" afterPath="$PROJECT_DIR$/target/test-classes/cse291/lsmdb/utils/TimedTest.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/CSE291StorageSystemProject2.iml" afterPath="$PROJECT_DIR$/.idea/CSE291StorageSystemProject2.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/cse291/lsmdb/io/sstable/SSTableConfig.java" afterPath="$PROJECT_DIR$/src/main/java/cse291/lsmdb/io/sstable/SSTableConfig.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/cse291/lsmdb/io/sstable/blocks/AbstractBlock.java" afterPath="$PROJECT_DIR$/src/main/java/cse291/lsmdb/io/sstable/blocks/AbstractBlock.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/cse291/lsmdb/io/sstable/blocks/ComponentFile.java" afterPath="$PROJECT_DIR$/src/main/java/cse291/lsmdb/io/sstable/blocks/ComponentFile.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/cse291/lsmdb/io/sstable/blocks/DataBlockDumper.java" afterPath="$PROJECT_DIR$/src/main/java/cse291/lsmdb/io/sstable/blocks/DataBlockDumper.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/cse291/lsmdb/io/sstable/blocks/DataBlockLoader.java" afterPath="$PROJECT_DIR$/src/main/java/cse291/lsmdb/io/sstable/blocks/DataBlockLoader.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/cse291/lsmdb/io/sstable/blocks/TempDataBlock.java" afterPath="$PROJECT_DIR$/src/main/java/cse291/lsmdb/io/sstable/blocks/TempDataBlock.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/cse291/lsmdb/io/sstable/SSTableTest.java" afterPath="$PROJECT_DIR$/src/test/java/cse291/lsmdb/io/sstable/SSTableTest.java" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -125,7 +85,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/compaction/LevelManager.java" />
         <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/SSTableConfig.java" />
         <option value="$PROJECT_DIR$/src/cse291/lsmdb/io/sstable/SSTable.java" />
         <option value="$PROJECT_DIR$/src/main/java/cse291/lsmdb/utils/Counter.java" />
@@ -176,6 +135,7 @@
         <option value="$PROJECT_DIR$/src/main/java/cse291/lsmdb/io/sstable/blocks/AbstractBlock.java" />
         <option value="$PROJECT_DIR$/src/main/java/cse291/lsmdb/io/sstable/blocks/DataBlockDumper.java" />
         <option value="$PROJECT_DIR$/src/main/java/cse291/lsmdb/io/sstable/blocks/DataBlockLoader.java" />
+        <option value="$PROJECT_DIR$/.gitignore" />
       </list>
     </option>
   </component>
@@ -288,166 +248,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="CSE291StorageSystemProject2" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="CSE291StorageSystemProject2" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="CSE291StorageSystemProject2" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="CSE291StorageSystemProject2" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="CSE291StorageSystemProject2" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="CSE291StorageSystemProject2" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="CSE291StorageSystemProject2" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="lsmdb" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="CSE291StorageSystemProject2" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="CSE291StorageSystemProject2" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="lsmdb" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="io" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="CSE291StorageSystemProject2" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="CSE291StorageSystemProject2" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="lsmdb" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="io" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="sstable" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="CSE291StorageSystemProject2" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="CSE291StorageSystemProject2" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="main" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="lsmdb" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="io" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="sstable" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="blocks" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -1021,14 +821,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/test/java/cse291/lsmdb/io/sstable/blocks/IndexBlockDumperTest.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="335">
-          <caret line="35" column="9" lean-forward="true" selection-start-line="35" selection-start-column="9" selection-end-line="35" selection-end-column="9" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/cse291/lsmdb/io/sstable/MemTableTest.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="18">
@@ -1419,6 +1211,14 @@
             <element signature="e#753#754#0" expanded="true" />
             <element signature="e#806#807#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="3" lean-forward="false" selection-start-line="0" selection-start-column="3" selection-end-line="0" selection-end-column="3" />
+          <folding />
         </state>
       </provider>
     </entry>
