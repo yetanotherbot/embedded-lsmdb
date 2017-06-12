@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="aee358cf-f557-4cb7-8261-569957d2f025" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.gitignore" afterPath="$PROJECT_DIR$/.gitignore" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/cse291/lsmdb/io/sstable/SSTable.java" afterPath="$PROJECT_DIR$/src/main/java/cse291/lsmdb/io/sstable/SSTable.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/cse291/lsmdb/io/sstable/compaction/LevelManager.java" afterPath="$PROJECT_DIR$/src/main/java/cse291/lsmdb/io/sstable/compaction/LevelManager.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/cse291/lsmdb/io/sstable/SSTableTest.java" afterPath="$PROJECT_DIR$/src/test/java/cse291/lsmdb/io/sstable/SSTableTest.java" />
     </list>
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -173,11 +171,11 @@
         <option value="$PROJECT_DIR$/src/main/java/cse291/lsmdb/io/sstable/blocks/AbstractBlock.java" />
         <option value="$PROJECT_DIR$/src/main/java/cse291/lsmdb/io/sstable/blocks/DataBlockDumper.java" />
         <option value="$PROJECT_DIR$/src/main/java/cse291/lsmdb/io/sstable/blocks/DataBlockLoader.java" />
-        <option value="$PROJECT_DIR$/.gitignore" />
         <option value="$PROJECT_DIR$/src/test/java/cse291/lsmdb/io/sstable/SSTableTest.java" />
         <option value="$PROJECT_DIR$/src/main/java/cse291/lsmdb/io/sstable/blocks/IndexBlockLoader.java" />
         <option value="$PROJECT_DIR$/src/main/java/cse291/lsmdb/io/sstable/compaction/LevelManager.java" />
         <option value="$PROJECT_DIR$/src/main/java/cse291/lsmdb/io/sstable/SSTable.java" />
+        <option value="$PROJECT_DIR$/.gitignore" />
       </list>
     </option>
   </component>
@@ -1411,13 +1409,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.gitignore">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="3" lean-forward="false" selection-start-line="0" selection-start-column="3" selection-end-line="0" selection-end-column="3" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar:///Library/Java/JavaVirtualMachines/jdk1.8.0_40.jdk/Contents/Home/src.zip!/java/util/Date.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-7614">
@@ -1509,6 +1500,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="6" lean-forward="false" selection-start-line="0" selection-start-column="6" selection-end-line="0" selection-end-column="6" />
           <folding />
         </state>
       </provider>
