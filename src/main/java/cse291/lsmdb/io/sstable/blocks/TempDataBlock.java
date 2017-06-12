@@ -1,6 +1,7 @@
 package cse291.lsmdb.io.sstable.blocks;
 
 import cse291.lsmdb.io.sstable.SSTableConfig;
+import org.apache.commons.compress.compressors.CompressorException;
 
 import java.io.File;
 import java.io.IOException;
@@ -93,10 +94,18 @@ public class TempDataBlock extends AbstractBlock implements Comparable<TempDataB
     }
 
     public ComponentFile getWritableComponentFile() throws IOException {
-        requireFileExists();
-        if (!getFile().canWrite())
-            getFile().setWritable(true);
+        requireFileWritable();
         return new ComponentFile(getFile(), "w", config.getFileBufferSize());
+    }
+
+    public ComponentFile getCompressibleWritableComponentFile() throws IOException, CompressorException {
+        requireFileWritable();
+        return new ComponentFile(
+                getFile(), "w",
+                config.getFileBufferSize(),
+                config.getCompressorProvider(),
+                config.getCompressorType()
+        );
     }
 
     @Override

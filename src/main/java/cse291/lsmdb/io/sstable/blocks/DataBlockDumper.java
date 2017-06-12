@@ -3,6 +3,7 @@ package cse291.lsmdb.io.sstable.blocks;
 import cse291.lsmdb.io.interfaces.Filter;
 import cse291.lsmdb.utils.Modification;
 import cse291.lsmdb.utils.Modifications;
+import org.apache.commons.compress.compressors.CompressorException;
 
 import java.io.IOException;
 
@@ -12,11 +13,19 @@ import java.io.IOException;
 public class DataBlockDumper {
     private final TempDataBlock tmpDataBlock;
     private final int filterBits;
+    private final boolean compressible;
 
-    public DataBlockDumper(TempDataBlock tmpDataBlock, int filterBits) {
+    public DataBlockDumper(TempDataBlock tmpDataBlock, int filterBits, boolean compressible) {
         this.tmpDataBlock = tmpDataBlock;
         this.filterBits = filterBits;
+        this.compressible = compressible;
     }
+
+    public DataBlockDumper(TempDataBlock tmpDataBlock, int filterBits) {
+        this(tmpDataBlock, filterBits, false);
+    }
+
+
 
     /**
      * Dumps the modifications into the current temporary block. The number of longs in
@@ -30,7 +39,9 @@ public class DataBlockDumper {
         tmpDataBlock.requireFileExists();
         ComponentFile c = null;
         try {
-            c = tmpDataBlock.getWritableComponentFile();
+            c = compressible ?
+                    tmpDataBlock.getCompressibleWritableComponentFile() :
+                    tmpDataBlock.getWritableComponentFile();
             long[] longs = filter.toLongs();
             if (longs.length * Long.SIZE != filterBits) throw new IOException("filter length mismatch");
             c.writeFilter(filter);
@@ -45,6 +56,8 @@ public class DataBlockDumper {
                 }
                 c.writeLong(mod.getTimestamp());
             }
+        } catch(CompressorException ce) {
+            throw new IOException(ce.getMessage());
         } finally {
             ComponentFile.tryClose(c);
         }

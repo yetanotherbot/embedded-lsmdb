@@ -7,11 +7,14 @@ import cse291.lsmdb.utils.Modification;
 import cse291.lsmdb.utils.Modifications;
 import cse291.lsmdb.utils.Qualifier;
 import cse291.lsmdb.utils.Timed;
+import org.apache.commons.compress.compressors.CompressorException;
+import org.apache.commons.compress.compressors.CompressorStreamProvider;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 /**
  * Created by musteryu on 2017/6/4.
@@ -20,18 +23,30 @@ public class DataBlockLoader extends AbstractSSTableBlock {
     private final DataBlock dataBlock;
     private final int bloomFilterBits;
     private final StringHasher hasher;
+    private final boolean compressible;
 
     public DataBlockLoader(DataBlock block, int bloomFilterBits, StringHasher hasher) {
+        this(block, bloomFilterBits, hasher, false);
+    }
+
+    public DataBlockLoader(
+            DataBlock block,
+            int bloomFilterBits,
+            StringHasher hasher,
+            boolean compressible) {
         dataBlock = block;
         this.bloomFilterBits = bloomFilterBits;
         this.hasher = hasher;
+        this.compressible = compressible;
     }
 
     @Override
     public Modification get(String row) throws NoSuchElementException {
         ComponentFile c = null;
         try {
-            c = dataBlock.getReadableComponentFile();
+            c = compressible ?
+                    dataBlock.getCompressibleReadableComponentFile() :
+                    dataBlock.getReadableComponentFile();
             Filter filter = c.readFilter(bloomFilterBits / Long.SIZE, longs -> new BloomFilter(longs, hasher));
             if (!filter.isPresent(row)) {
                 throw new NoSuchElementException("no such element");
@@ -51,6 +66,9 @@ public class DataBlockLoader extends AbstractSSTableBlock {
             throw new NoSuchElementException("no such element");
         } catch (IOException ioe) {
             throw new NoSuchElementException("could not find element due to IOException " + ioe.getMessage());
+        } catch (CompressorException ce) {
+            throw new NoSuchElementException(
+                    "could not find element due to CompressionException " + ce.getMessage());
         } finally {
             ComponentFile.tryClose(c);
         }
@@ -75,7 +93,9 @@ public class DataBlockLoader extends AbstractSSTableBlock {
     public Modifications extractModifications(int limit) throws IOException {
         ComponentFile c = null;
         try {
-            c = dataBlock.getReadableComponentFile();
+            c =  compressible ?
+                    dataBlock.getCompressibleReadableComponentFile() :
+                    dataBlock.getReadableComponentFile();
             for (int i = 0; i < bloomFilterBits / Long.SIZE; i++) {
                 c.readLong();
             }
@@ -92,6 +112,8 @@ public class DataBlockLoader extends AbstractSSTableBlock {
             }
 
             return mods;
+        } catch (CompressorException ce) {
+            throw new IOException(ce.getMessage());
         } finally {
             ComponentFile.tryClose(c);
         }

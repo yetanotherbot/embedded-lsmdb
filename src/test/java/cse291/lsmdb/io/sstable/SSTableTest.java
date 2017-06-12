@@ -42,7 +42,7 @@ public class SSTableTest {
     @Test
     public void put() throws Exception {
         System.out.println(new Date());
-        for (int i = 0; i < Integer.MAX_VALUE / 16; i++) {
+        for (int i = 0; i < 5000000; i++) {
             String row = "test " + i + "qwertyuiopasdfghjklzxcvbnm";
             String val = "test " + i + "qwertyuiopasdfghjklzxcvbnm";
             if (i % 2 == 0) {

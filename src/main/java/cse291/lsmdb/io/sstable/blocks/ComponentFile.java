@@ -1,6 +1,9 @@
 package cse291.lsmdb.io.sstable.blocks;
 
 import cse291.lsmdb.io.interfaces.Filter;
+import org.apache.commons.compress.compressors.CompressorException;
+import org.apache.commons.compress.compressors.CompressorStreamFactory;
+import org.apache.commons.compress.compressors.CompressorStreamProvider;
 
 import java.io.*;
 import java.nio.ByteBuffer;
@@ -26,6 +29,45 @@ public class ComponentFile {
 
     public ComponentFile(File f, int size) throws IOException {
         this(f, "r", size);
+    }
+
+    public ComponentFile(File f, String mode, int size, CompressorStreamProvider compressor, String compressType)
+            throws IOException, CompressorException {
+        if (compressor != null) {
+            if (mode == "r") {
+                reader = Optional.of(new BufferedInputStream(
+                        compressor.createCompressorInputStream(
+                                compressType,
+                                new FileInputStream(f),
+                                true
+                        ),
+                        size
+                ));
+                writer = Optional.empty();
+            } else {
+                writer = Optional.of(new BufferedOutputStream(
+                        compressor.createCompressorOutputStream(
+                                compressType, new FileOutputStream(f)
+                        ),
+                        size
+                ));
+                reader = Optional.empty();
+            }
+        } else {
+            if (mode == "r") {
+                reader = Optional.of(new BufferedInputStream(new FileInputStream(f), size));
+                writer = Optional.empty();
+            } else {
+                writer = Optional.of(new BufferedOutputStream(new FileOutputStream(f), size));
+                reader = Optional.empty();
+            }
+        }
+    }
+
+    public ComponentFile(
+            File f, int size, CompressorStreamProvider compressor, String compressType
+    ) throws IOException, CompressorException {
+        this(f, "r", size, compressor, compressType);
     }
 
     public static boolean tryClose(ComponentFile c) {

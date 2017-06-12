@@ -2,6 +2,8 @@ package cse291.lsmdb.io.sstable;
 
 import cse291.lsmdb.io.interfaces.StringHasher;
 import cse291.lsmdb.utils.Modifications;
+import org.apache.commons.compress.compressors.CompressorStreamFactory;
+import org.apache.commons.compress.compressors.CompressorStreamProvider;
 
 import java.util.LinkedList;
 import java.util.function.Function;
@@ -39,6 +41,18 @@ public final class SSTableConfig {
     private int fileBufferSize = 256 * 256;
 
     private int rowCacheCapacity = 1024;
+
+    public CompressorStreamProvider getCompressorProvider() {
+        return compressorProvider;
+    }
+
+    public String getCompressorType() {
+        return compressorType;
+    }
+
+    private CompressorStreamProvider compressorProvider = new CompressorStreamFactory();
+
+    private String compressorType;
 
     private SSTableConfig() {
     }
@@ -160,6 +174,11 @@ public final class SSTableConfig {
 
         public SSTableConfigBuilder setFileBufferSize(int size) {
             config.fileBufferSize = size;
+            return this;
+        }
+
+        public SSTableConfigBuilder setCompressorType(String s) {
+            config.compressorType = s;
             return this;
         }
 

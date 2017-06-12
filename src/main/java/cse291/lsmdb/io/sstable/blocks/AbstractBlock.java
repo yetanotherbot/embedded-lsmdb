@@ -2,6 +2,7 @@ package cse291.lsmdb.io.sstable.blocks;
 
 import cse291.lsmdb.io.interfaces.Block;
 import cse291.lsmdb.io.sstable.SSTableConfig;
+import org.apache.commons.compress.compressors.CompressorException;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,6 +23,15 @@ abstract class AbstractBlock implements Block {
         return new ComponentFile(getFile(), config.getFileBufferSize());
     }
 
+    public ComponentFile getCompressibleReadableComponentFile() throws IOException, CompressorException {
+        return new ComponentFile(
+                getFile(),
+                config.getFileBufferSize(),
+                config.getCompressorProvider(),
+                config.getCompressorType()
+        );
+    }
+
     public void requireFileExists() throws IOException {
         File file = getFile();
         if (!file.exists()) {
@@ -30,5 +40,12 @@ abstract class AbstractBlock implements Block {
             if (!dir.exists()) dir.mkdirs();
             file.createNewFile();
         }
+    }
+
+    public void requireFileWritable() throws IOException {
+        requireFileExists();
+        File file = getFile();
+        if (!file.canWrite())
+            file.setWritable(true);
     }
 }
