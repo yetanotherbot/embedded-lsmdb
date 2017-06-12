@@ -54,8 +54,11 @@ public class SSTable implements Flushable, Closeable {
         }
 
         for (int i = 1; i < levelManagers.length; i++) {
-            Optional<String> res = levelManagers[i].get(row);
-            if (res.isPresent()) return res;
+            System.out.println("lookup level: " + i);
+            try {
+                if (levelManagers[i].isEmpty()) return Optional.empty();
+                return levelManagers[i].get(row);
+            } catch (NoSuchElementException e) { continue; }
         }
 
         return Optional.empty();

@@ -3,6 +3,8 @@ package cse291.lsmdb.io.sstable;
 import cse291.lsmdb.io.sstable.blocks.Descriptor;
 import org.junit.Test;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Date;
 import java.util.Optional;
 
@@ -41,8 +43,9 @@ public class SSTableTest {
     //    @Ignore
     @Test
     public void put() throws Exception {
-        System.out.println(new Date());
-        for (int i = 0; i < 5000000; i++) {
+        Instant start = Instant.now();
+        System.out.println(start);
+        for (int i = 0; i < 2000000; i++) {
             String row = "test " + i + "qwertyuiopasdfghjklzxcvbnm";
             String val = "test " + i + "qwertyuiopasdfghjklzxcvbnm";
             if (i % 2 == 0) {
@@ -51,7 +54,21 @@ public class SSTableTest {
                 sst.put(row, null);
             }
         }
-        System.out.println(new Date());
+        System.out.println("2000000 put used: " + Duration.between(start, Instant.now()));
+
+        start = Instant.now();
+        for (int i = 2000000 - 1; i >= 0; i--) {
+            String row = "test " + i + "qwertyuiopasdfghjklzxcvbnm";
+            Optional<String> v = sst.get(row);
+            if (i % 2 == 0) {
+                assertTrue(v.isPresent());
+                System.out.println("put: " + row + ", " + v.get());
+            } else {
+                assertFalse(v.isPresent());
+                System.out.println("delete: " + row);
+            }
+        }
+        System.out.println("2000000 get used: " + Duration.between(start, Instant.now()));
     }
 
 }

@@ -45,27 +45,24 @@ public class LevelManager {
         return new IndexBlockLoader(getIndexBlock());
     }
 
-    public Optional<String> get(String row) throws InterruptedException {
-        try {
-            synchronized (this) {
-                while (shouldWait) {
-                    this.wait();
-                }
+    public Optional<String> get(String row) throws InterruptedException, NoSuchElementException {
+        synchronized (this) {
+            while (shouldWait) {
+                this.wait();
             }
-            int index = getIndexBlockLoader().lookup(row);
-            if (index != -1) {
-                DataBlock dataBlock = new DataBlock(desc, column, level, index, config);
-                DataBlockLoader dataBlockLoader = new DataBlockLoader(
-                        dataBlock, config.getPerBlockBloomFilterBits(), config.getHasher());
-                Modification mod = dataBlockLoader.get(row);
-                if (mod.isPut()) {
-                    return Optional.of(mod.getIfPresent().get());
-                }
-            }
-            return Optional.empty();
-        } catch (NoSuchElementException e) {
-            return Optional.empty();
         }
+        int index = getIndexBlockLoader().lookup(row);
+        if (index != -1) {
+            DataBlock dataBlock = new DataBlock(desc, column, level, index, config);
+            DataBlockLoader dataBlockLoader = new DataBlockLoader(
+                    dataBlock, config.getPerBlockBloomFilterBits(), config.getHasher());
+            Modification mod = dataBlockLoader.get(row);
+            if (mod.isPut()) {
+                return Optional.of(mod.getIfPresent().get());
+            } else {
+                return Optional.empty();
+            }
+        } else throw new NoSuchElementException("could not find such element");
     }
 
     public Map<String, Timed<String>> getColumnWithQualifier(Qualifier q) throws IOException, InterruptedException {
@@ -348,6 +345,13 @@ public class LevelManager {
         return collect();
     }
 
+    public boolean isEmpty() {
+        try{
+            return !getIndexBlock().getFile().exists();
+        } catch (IOException e) {
+            return true;
+        }
+    }
 
     public Descriptor getDesc() {
         return desc;
