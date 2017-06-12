@@ -31,9 +31,9 @@ public class Qualifier {
         }
         switch (operator) {
             case "<":
-                return colValue.compareTo(target) == -1;
+                return colValue.compareTo(target) < 0;
             case ">":
-                return colValue.compareTo(target) == 1;
+                return colValue.compareTo(target) > 0;
             case ">=":
                 return colValue.compareTo(target) >= 0;
             case "<=":

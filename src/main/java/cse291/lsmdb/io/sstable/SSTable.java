@@ -170,4 +170,10 @@ public class SSTable implements Flushable, Closeable {
         flush();
         isClosed = true;
     }
+
+    @Override
+    protected void finalize() throws Throwable {
+        super.finalize();
+        close();
+    }
 }

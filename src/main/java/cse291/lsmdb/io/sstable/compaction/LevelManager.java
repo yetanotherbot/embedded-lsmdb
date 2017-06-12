@@ -229,11 +229,12 @@ public class LevelManager {
         WritableFilter f = new BloomFilter(config.getPerBlockBloomFilterBits(), config.getHasher());
         Modifications d = new Modifications(config.getBlockBytesLimit());
 
-        List<Pair<String, String>> ranges = null;
+        List<Pair<String, String>> ranges;
         if (getIndexBlock().getFile().exists()) {
             ranges = new ArrayList<>(getRanges().subList(0, originIndex));
         } else {
             ranges = new ArrayList<>();
+            Queue<Integer> q;
         }
 
         int i = 0;
