@@ -5,8 +5,7 @@ import org.junit.Test;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -22,22 +21,32 @@ public class APITest {
     @Test
     public void put() throws Exception {
         Instant start = Instant.now();
-        System.out.println(start);
+        System.out.println("Insertion Benchmark starts at " + start);
         for (int i = 0; i < 2000000; i++) {
             String rowKey = "testRow " + i + "qwertyuiopasdfghjklzxcvbnm";
-            String[] colVals = {"testCol1 " + i + "qwertyuiopasdfghjklzxcvbnm","testCol2 " + i + "qwertyuiopasdfghjklzxcvbnm"};
+            String[] colVals = {"testCol1 " + i % 1000 + "qwertyuiopasdfghjklzxcvbnm","testCol2 " + i + "qwertyuiopasdfghjklzxcvbnm"};
             testTable.insert(packageRow(rowKey,testColumns,colVals));
 
         }
         System.out.println("2000000 insert used: " + Duration.between(start, Instant.now()));
 
         start = Instant.now();
+        System.out.println("Rowkey Select Benchmark starts at " + start);
         for (int i = 2000000 - 1; i >= 0; i--) {
             String rowKey = "testRow " + i + "qwertyuiopasdfghjklzxcvbnm";
             Row row = testTable.selectRowKey(rowKey);
             assertNotNull(row);
         }
-        System.out.println("2000000 selectRow used: " + Duration.between(start, Instant.now()));
+        System.out.println("2000000 select rowkey used: " + Duration.between(start, Instant.now()));
+
+        start = Instant.now();
+        System.out.println("Column Value Select Benchmark starts at " + start);
+        for (int i = 0; i < 2000000; i++) {
+            String colValue = "testCol1 " + i % 1000 + "qwertyuiopasdfghjklzxcvbnm";
+            List<Row> rows = testTable.selectRowWithColumnValue("col1", colValue);
+            assertTrue(rows.size() > 0);
+        }
+        System.out.println("20000 select column value used: " + Duration.between(start, Instant.now()));
     }
 
     private static Row packageRow(String rowKey, String[] colNames, String[] colValues){
