@@ -101,7 +101,7 @@ public class Table implements Flushable, Closeable {
         for (Row row : result) {
             this.recentlyAccessedRows.add(new Timed<>(row));
         }
-        return null;
+        return result;
     }
 
     /**

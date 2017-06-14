@@ -75,7 +75,7 @@ public class SSTable implements Flushable, Closeable {
         for (int i = 1; i < config.getOnDiskLevelsLimit(); i++) {
             result = this.mergeEntryMaps(result, this.levelManagers[i].getColumnWithQualifier(q));
         }
-        for (int i = 0; i < config.getMemTablesLimit(); i++) {
+        for (int i = 0; i < memTables.size(); i++) {
             result = this.mergeEntryMaps(result, this.memTables.get(i).getColumnWithQualifier(q));
         }
 
