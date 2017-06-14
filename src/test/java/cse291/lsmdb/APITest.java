@@ -22,25 +22,26 @@ public class APITest {
     public void put() throws Exception {
         Instant start = Instant.now();
         System.out.println("Insertion Benchmark starts at " + start);
-        for (int i = 0; i < 100000; i++) {
+        for (int i = 0; i < 1000000; i++) {
             String rowKey = "testRow " + i + "qwertyuiopasdfghjklzxcvbnm";
             String[] colVals = {"testCol1 " + i % 1000 + "qwertyuiopasdfghjklzxcvbnm", "testCol2 " + i + "qwertyuiopasdfghjklzxcvbnm"};
             testTable.insert(packageRow(rowKey, testColumns, colVals));
 
         }
-        System.out.println("100000 insert used: " + Duration.between(start, Instant.now()));
+
+        System.out.println("100000 insert used on average: " + Duration.between(start, Instant.now()).getSeconds()/1000000.0);
     }
 
     @Test
     public void selectRowKey() throws Exception {
         Instant start = Instant.now();
         System.out.println("Rowkey Select Benchmark starts at " + start);
-        for (int i = 100000 - 1; i >= 0; i--) {
+        for (int i = 0; i < 100000; i++) {
             String rowKey = "testRow " + i + "qwertyuiopasdfghjklzxcvbnm";
             Row row = testTable.selectRowKey(rowKey);
             Assert.assertNotNull(row);
         }
-        System.out.println("100000 select rowkey used: " + Duration.between(start, Instant.now()));
+        System.out.println("100000 select rowkey used on average: " + Duration.between(start, Instant.now()).getSeconds()/100000.0);
     }
 
     @Test
@@ -53,7 +54,7 @@ public class APITest {
             System.out.println(rows.size());
             Assert.assertTrue(rows.size() > 0);
         }
-        System.out.println("100000 select column value used: " + Duration.between(start, Instant.now()));
+        System.out.println("100000 select column value used on average: " + Duration.between(start, Instant.now()).getSeconds()/100000.0);
     }
 
     private static Row packageRow(String rowKey, String[] colNames, String[] colValues){

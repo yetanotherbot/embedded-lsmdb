@@ -32,7 +32,6 @@ public class Table implements Flushable, Closeable {
         this.sstMap = new HashMap<>();
         this.config = SSTableConfig.defaultConfig();
         this.recentlyAccessedRows = new PriorityQueue<Timed<Row>>(config.getRowCacheCapacity());
-        // TODO: Set correct Descriptor & Config
         Descriptor desc = new Descriptor(tableName, "", "", columnNames);
 
         for (String columnName : columnNames) {
