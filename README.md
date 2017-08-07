@@ -1,4 +1,4 @@
-# CSE291StorageSystemProject2
+# embedded-lsmdb
 
 ## Authors
 Yu Huang A53207202, Chengtao Ji A98008464
